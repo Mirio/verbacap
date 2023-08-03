@@ -38,4 +38,4 @@ class Episode(BaseModel):
     is_downloaded = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.datasource.name}/{self.name}"
+        return f"{self.datasource.provider.name}/{self.datasource.name}/{self.name}"
