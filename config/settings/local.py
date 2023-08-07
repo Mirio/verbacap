@@ -58,3 +58,4 @@ CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 # Your stuff...
 # ------------------------------------------------------------------------------
+PERSIST_AUDIO_ROOTDIR = env("PERSIST_AUDIO_ROOTDIR", default="/tmp")

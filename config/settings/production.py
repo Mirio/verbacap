@@ -154,3 +154,4 @@ LOGGING = {
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+PERSIST_AUDIO_ROOTDIR = env("PERSIST_AUDIO_ROOTDIR", default="/persist/audio")

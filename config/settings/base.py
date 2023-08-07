@@ -88,6 +88,7 @@ LOCAL_APPS = [
     "verbacap.users",
     # Your stuff: custom apps go here
     "core",
+    "youtube",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
