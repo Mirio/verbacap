@@ -61,40 +61,21 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item active">
-                <a class="nav-link" href="{% url 'homepage' %}">Home <span class="visually-hidden">(current)</span></a>
+                <a class="nav-link" href="{% url 'homepage' %}"><i class="fa-solid fa-house"></i> Home <span class="visually-hidden">(current)</span></a>
               </li>
-              {% if request.user.is_authenticated %}
-                <li class="nav-item">
-                  <a class="nav-link"
-                     href="{% url 'users:detail' request.user.username %}">{% translate "My Profile" %}</a>
-                </li>
-                <li class="nav-item">
-                  {# URL provided by django-allauth/account/urls.py #}
-                  <a class="nav-link" href="{% url 'account_logout' %}">{% translate "Sign Out" %}</a>
-                </li>
-              {% else %}
-                <li class="nav-item">
-                  {# URL provided by django-allauth/account/urls.py #}
-                  <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% translate "Sign In" %}</a>
-                </li>
-              {% endif %}
+              <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fa-solid fa-circle-play"></i> Player</a>
+              </li>
+              <li class="nav-item">
+                {# URL provided by django-allauth/account/urls.py #}
+                <a class="nav-link" href="{% url 'account_logout' %}"><i class="fa-solid fa-right-from-bracket"></i> {% translate "Sign Out" %}</a>
+              </li>
             </ul>
           </div>
         </div>
       </nav>
     </div>
     <div class="container">
-      {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-            {{ message }}
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Close"></button>
-          </div>
-        {% endfor %}
-      {% endif %}
       {% block content %}
       {% endblock content %}
     </div>

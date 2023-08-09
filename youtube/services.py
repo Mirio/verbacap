@@ -12,7 +12,7 @@ def get_rssurl(input_url: str) -> CommonResponse:
     out = CommonResponse()
     if not input_url.startswith("https://www.youtube.com/"):
         out.status = "error"
-        out.message = "Not a Youtube Url"
+        out.message = "Not a youtube url"
     else:
         req = requests.get(url=input_url, cookies={"CONSENT": "YES+"})
         soup = BeautifulSoup(req.text, features="html.parser")
@@ -29,7 +29,7 @@ def get_rss(input_url: str, limit: int = 10) -> CommonResponse:
     counter = 0
     if not input_url.startswith("https://www.youtube.com/"):
         out.status = "error"
-        out.message = "Not a Youtube Url"
+        out.message = "Not a youtube url"
     else:
         req = feedparser.parse(url_file_stream_or_string=input_url)
         out.value = []
@@ -45,7 +45,7 @@ def get_audio(input_url: str, fname: str) -> CommonResponse:
     out = CommonResponse()
     if not input_url.startswith("https://www.youtube.com/"):
         out.status = "error"
-        out.message = "Not a Youtube Url"
+        out.message = "Not a youtube url"
     else:
         ytdl = YoutubeDL(
             params={

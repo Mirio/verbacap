@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from core.models import DataSource, Episode, Provider
+from core.models import DataSource, Episode, Playlist, Provider
 
 
 # Register your models here.
@@ -20,3 +20,9 @@ class DataSourceAdmin(admin.ModelAdmin):
 class EpisodeAdmin(admin.ModelAdmin):
     ordering = ["name"]
     list_display = ["name", "datasource", "is_viewed", "is_downloaded"]
+
+
+@admin.register(Playlist)
+class PlaylistAdmin(admin.ModelAdmin):
+    ordering = ["order_num"]
+    list_display = ["order_num", "episode"]
