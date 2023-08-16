@@ -6,7 +6,7 @@ from core.models import DataSource, Episode, Playlist
 
 
 # Create your views here.
-class Homepage(LoginRequiredMixin, View):
+class HomepageView(LoginRequiredMixin, View):
     def get(self, request):
         episode = Episode.objects.all()
         context = {
@@ -19,3 +19,9 @@ class Homepage(LoginRequiredMixin, View):
             "playlist": Playlist.objects.all()[0:10],
         }
         return render(request, "core/index.html", context=context)
+
+
+class PlayerView(LoginRequiredMixin, View):
+    def get(self, request):
+        context = {"playlist": Playlist.objects.all()}
+        return render(request, "core/player.html", context=context)

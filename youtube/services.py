@@ -52,7 +52,13 @@ def get_audio(input_url: str, fname: str) -> CommonResponse:
                 "format": "bestaudio",
                 "quiet": True,
                 "paths": {"home": settings.PERSIST_AUDIO_ROOTDIR},
-                "outtmpl": "%s.opus" % fname,
+                "outtmpl": "%s" % fname,
+                "postprocessors": [
+                    {
+                        "key": "FFmpegExtractAudio",
+                        "preferredcodec": "mp3",
+                    }
+                ],
             }
         )
         try:

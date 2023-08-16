@@ -30,7 +30,7 @@ class Services_TestCase(TestCase):
 
     def test_get_audio(self):
         get_audio("https://www.youtube.com/watch?v=ySdna7EvUZ0", fname="a")
-        self.assertEqual(exists("/tmp/a.opus"), True)
+        self.assertEqual(exists("/tmp/a.mp3"), True)
         download_audio_noyt = get_audio("https://example.com", "a")
         self.assertEqual(
             download_audio_noyt.__dict__, {"message": "Not a youtube url", "status": "error", "value": None}
