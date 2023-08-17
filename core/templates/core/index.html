@@ -4,26 +4,93 @@
   VerbaCap - Homepage
 {% endblock title %}
 {% block content %}
+  <h1 class="text-center p-1">Dashboard</h1>
   <div class="row">
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-md-4 pb-3 pb-md-0">
+      <div class="card bg-dark text-white text-center">
+        <div class="card-header border-primary">Channels Followed</div>
+        <div class="card-body">
+          <h3>
+            <i class="fa-solid fa-thumbs-up"></i> {{ stat.total_followed }}
+          </h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4 pb-3 pb-md-0">
+      <div class="card bg-dark text-white text-center">
+        <div class="card-header border-success">Episode Loaded</div>
+        <div class="card-body">
+          <h3>
+            <i class="fa-solid fa-video"></i> {{ stat.total_episode }}
+          </h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4 pb-3 pb-md-0">
+      <div class="card bg-dark text-white text-center">
+        <div class="card-header border-warning">Episode Viewed</div>
+        <div class="card-body">
+          <h3>
+            <i class="fa-solid fa-eye"></i> {{ stat.total_episode_viewed }}
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row pt-3">
+    <div class="col-12 col-md-8">
       <div class="card text-bg-dark">
         <div class="card-body">
           <h5 class="card-title text-center">Latest Episode</h5>
-          <p class="card-text">
-            <div class="card text-bg-dark border-primary">
-              <div class="card-body">
+          <ul class="list-group list-group-flush">
+            {% for episode in episodes %}
+              <li class="list-group-item bg-dark text-white border-success">
                 <div class="row">
-                  <div class="col-1">
-                    <i class="fa-solid fa-plus"></i>
+                  <div class="col-3 col-md-1 text-center">
+                    <button type="button" class="btn btn-primary btn-sm">
+                      <i class="fa-solid fa-plus"></i>
+                    </button>
                   </div>
-                  <div class="col-3 text-center">02/08/2023</div>
-                  <div class="col-8">
-                    <i class="fa-brands fa-youtube" style="color: #FF0000"></i> Come fare qualcosa di grande | Reaction a Paul Graham
+                  <div class="col-9 col-md-2 text-center d-flex">
+                    <div class="d-flex align-items-center fs-12px">{{ episode.episode_date }}</div>
+                  </div>
+                  <div class="col-12 col-md-9 fs-14px d-flex">
+                    <div class="d-flex align-items-center">
+                      <i class="{{ episode.datasource.provider.icon }}"
+                         style="color: {{ episode.datasource.provider.color }}"></i> {{ episode.name |truncatechars:70 }}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </p>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="d-grid gap-2 pb-3 pt-3 pt-md-0">
+        <button type="button" class="btn btn-primary text-white btn-lg">
+          <i class="fa-solid fa-circle-play"></i> Go to Player
+        </button>
+      </div>
+      <div class="d-grid gap-2 pb-3 pt-3 pt-md-0">
+        <button type="button" class="btn btn-success text-white btn-lg">
+          <i class="fa-solid fa-gear"></i> Settings
+        </button>
+      </div>
+      <div class="card text-bg-dark">
+        <div class="card-header border-success text-center">Playlist</div>
+        <div class="card-body">
+          <div class="d-flex">
+            <ul class="list-group list-group-flush d-flex align-items-center">
+              {% for iter in playlist %}
+                <li class="list-group-item bg-dark text-white fs-14px border-info">
+                  <i class="{{ iter.episode.datasource.provider.icon }}"
+                     style="color: {{ iter.episode.datasource.provider.color }}"></i>  {{ iter }}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
         </div>
       </div>
     </div>

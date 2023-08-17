@@ -30,6 +30,7 @@ class DataSource(BaseModel):
 
 
 class Episode(BaseModel):
+    episode_id = models.CharField(help_text="Episode ID (i.e Youtube ID)", unique=True)
     name = models.CharField(help_text="Episode Name")
     datasource = models.ForeignKey(DataSource, on_delete=models.CASCADE, help_text="Datasource to use")
     episode_date = models.DateField()
@@ -39,3 +40,11 @@ class Episode(BaseModel):
 
     def __str__(self):
         return f"{self.datasource.provider.name}/{self.datasource.name}/{self.name}"
+
+
+class Playlist(BaseModel):
+    order_num = models.SmallIntegerField()
+    episode = models.ForeignKey(Episode, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.episode.name}"

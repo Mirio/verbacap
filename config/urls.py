@@ -5,11 +5,13 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 
-from core.views import Homepage
+from core.views import HomepageView, PlayerView
 
 urlpatterns = [
     # Podcast
-    path("", Homepage.as_view(), name="homepage"),
+    path("", HomepageView.as_view(), name="homepage"),
+    path("player/", PlayerView.as_view(), name="player"),
+    *static("persist/", document_root=settings.PERSIST_AUDIO_ROOTDIR),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management

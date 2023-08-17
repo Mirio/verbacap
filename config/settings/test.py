@@ -30,3 +30,4 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 TEMPLATES[0]["OPTIONS"]["debug"] = True  # type: ignore # noqa: F405
 # Your stuff...
 # ------------------------------------------------------------------------------
+PERSIST_AUDIO_ROOTDIR = "/tmp"
