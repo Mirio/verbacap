@@ -58,8 +58,8 @@ jobs:
     steps:
       - name: Install os packages
         run: |
-          apt update
-          apt install -y ffmpeg
+          sudo apt update
+          sudo apt install -y ffmpeg
 
       - name: Checkout Code Repository
         uses: actions/checkout@v3
