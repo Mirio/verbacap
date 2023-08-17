@@ -42,6 +42,11 @@ jobs:
       CELERY_BROKER_URL: 'redis://localhost:6379/0'
 
     steps:
+      - name: Install os packages
+        run: |
+          apt update
+          apt install -y ffmpeg
+
       - name: Checkout Code Repository
         uses: actions/checkout@v3
 
