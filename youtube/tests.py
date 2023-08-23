@@ -70,6 +70,6 @@ class Services_TestCase(TestCase):
 
     def test_download_episode_yt(self):
         obj = download_episode_yt(episode_id="__NeP0RqACU")
-        self.assertEqual(obj, {"message": "Already downloaded.", "status": "success", "value": None})
+        self.assertEqual(obj, {"message": "Downloaded.", "status": "success", "value": None})
         obj_noexist = download_episode_yt(episode_id="xyz")
         self.assertEqual(obj_noexist, {"message": "Episode ID not found", "status": "error", "value": None})
