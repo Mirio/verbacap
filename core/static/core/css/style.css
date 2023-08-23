@@ -8,3 +8,9 @@ body {
 .fs-12px {
     font-size: 12px;
 }
+.selected-audio {
+    background-color: #226f23e0 !important;
+}
+.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar {
+    opacity: 1!important;
+}
