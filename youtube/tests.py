@@ -1,4 +1,3 @@
-from os import remove
 from os.path import exists
 
 from django.test import TestCase
@@ -52,9 +51,9 @@ class Services_TestCase(TestCase):
     def test_get_audio(self):
         getaudio = get_audio("https://www.youtube.com/watch?v=npFE7NIy574", fname="a")
         self.assertEqual(exists("/tmp/a.mp3"), True)
-        remove("/tmp/a.mp3")
-        getaudio = get_audio("https://www.youtube.com/watch?v=npFE7NIy574", fname="a")
         self.assertEqual(getaudio.__dict__, {"status": "success", "message": "Downloaded.", "value": None})
+        getaudio = get_audio("https://www.youtube.com/watch?v=npFE7NIy574", fname="a")
+        self.assertEqual(getaudio.__dict__, {"status": "success", "message": "Already downloaded.", "value": None})
         download_audio_noyt = get_audio("https://example.com", "a")
         self.assertEqual(
             download_audio_noyt.__dict__, {"message": "Not a youtube url", "status": "error", "value": None}
