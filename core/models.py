@@ -15,6 +15,7 @@ class Provider(BaseModel):
     name = models.CharField(help_text="Provider name", unique=True)
     icon = models.CharField(help_text="Font Awesome icon, insert full html")
     color = models.CharField(help_text="HexColor to apply on the icon", default="#fff")
+    shortname = models.CharField(help_text="Prefix for the audio files", default="000")
 
     def __str__(self):
         return self.name

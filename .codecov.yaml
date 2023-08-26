@@ -1,5 +1,9 @@
 coverage:
   status:
+    patch:
+      default:
+        target: 85%
+        if_ci_failed: error
     project:
       default:
         target: 85%

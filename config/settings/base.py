@@ -74,6 +74,7 @@ DJANGO_APPS = [
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
     "django.forms",
+    "django_filters",
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
@@ -82,6 +83,10 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "django_celery_beat",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "corsheaders",
+    "drf_spectacular",
 ]
 
 LOCAL_APPS = [
@@ -287,7 +292,7 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_TIME_LIMIT = 5 * 60
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#task-soft-time-limit
 # TODO: set to whatever value is adequate in your circumstances
-CELERY_TASK_SOFT_TIME_LIMIT = 60
+CELERY_TASK_SOFT_TIME_LIMIT = 3600
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#beat-scheduler
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#worker-send-task-events
@@ -316,6 +321,29 @@ SOCIALACCOUNT_FORMS = {"signup": "verbacap.users.forms.UserSocialSignupForm"}
 # https://django-compressor.readthedocs.io/en/latest/quickstart/#installation
 INSTALLED_APPS += ["compressor"]
 STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
+# django-rest-framework
+# -------------------------------------------------------------------------------
+# django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+}
 
+# django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
+CORS_URLS_REGEX = r"^/api/.*$"
+
+# By Default swagger ui is available only to admin user(s). You can change permission classes to change that
+# See more configuration options at https://drf-spectacular.readthedocs.io/en/latest/settings.html#settings
+SPECTACULAR_SETTINGS = {
+    "TITLE": "VerbaCap API",
+    "DESCRIPTION": "Documentation of API endpoints of VerbaCap",
+    "VERSION": "1.0.0",
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
+}
 # Your stuff...
 # ------------------------------------------------------------------------------

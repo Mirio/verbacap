@@ -42,14 +42,24 @@
       <div class="card text-bg-dark">
         <div class="card-body">
           <h5 class="card-title text-center">Latest Episode</h5>
+          <input type="hidden" id="csrfmiddlewaretoken" value="{{ csrf_token }}" />
           <ul class="list-group list-group-flush">
             {% for episode in episodes %}
               <li class="list-group-item bg-dark text-white border-success">
                 <div class="row">
                   <div class="col-3 col-md-1 text-center">
-                    <button type="button" class="btn btn-primary btn-sm">
-                      <i class="fa-solid fa-plus"></i>
-                    </button>
+                    <a href="#"
+                       onclick="add_episode('{{ episode.datasource.provider.shortname }}','{{ episode.episode_id }}')">
+                      <button id="{{ episode.datasource.provider.shortname }}_{{ episode.episode_id }}"
+                              type="button"
+                              class="btn btn-primary btn-sm">
+                        {% if episode.is_playlist_present %}
+                          <i class="fa-solid fa-check"></i>
+                        {% else %}
+                          <i class="fa-solid fa-plus"></i>
+                        {% endif %}
+                      </button>
+                    </a>
                   </div>
                   <div class="col-9 col-md-2 text-center d-flex">
                     <div class="d-flex align-items-center fs-12px">{{ episode.episode_date }}</div>
@@ -69,9 +79,9 @@
     </div>
     <div class="col-md-4">
       <div class="d-grid gap-2 pb-3 pt-3 pt-md-0">
-        <button type="button" class="btn btn-primary text-white btn-lg">
+        <a href="{% url 'player' %}" class="btn btn-primary text-white btn-lg">
           <i class="fa-solid fa-circle-play"></i> Go to Player
-        </button>
+        </a>
       </div>
       <div class="d-grid gap-2 pb-3 pt-3 pt-md-0">
         <button type="button" class="btn btn-success text-white btn-lg">
@@ -96,3 +106,23 @@
     </div>
   </div>
 {% endblock content %}
+{% block inline_javascript %}
+  <script>
+    function add_episode(provider_shorname, episode_id) {
+      let csrf_token = document.getElementById("csrfmiddlewaretoken");
+      let basehtml = document.getElementById(provider_shorname + "_" + episode_id);
+      basehtml.innerHTML = '<i class="fa-solid fa-check"></i>';
+      const reqopt = {
+        method: "PUT",
+        body: JSON.stringify({}),
+        credentials: "same-origin",
+        headers: {
+          "X-CSRFToken": csrf_token.value
+        }
+      }
+      fetch("/api/playlist/edit/" + provider_shorname + "/" + episode_id + "/", reqopt).catch(error => {
+        console.log(error);
+      });
+    }
+  </script>
+{% endblock inline_javascript %}

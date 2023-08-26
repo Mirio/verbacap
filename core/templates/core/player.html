@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}
+  VerbaCap - Player
+{% endblock title %}
+{% block additional_javascript %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.5.1/video.min.js"
+          integrity="sha512-OYbAJ7IrTmu9gT/W8idh1Ws+LN2rEDQSKF7Z1U0fRJJV3Cd6JIZYLmtVVRBFnra93SFbisfXe6KLybXbCZ906w=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+{% endblock additional_javascript %}
+{% block additional_css %}
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.5.1/video-js.min.css"
+        integrity="sha512-+CRWio9t8I0yMYqwHOQWIybOeIlfACzx/HkiJAvhhpPD0G310qhPkhh0xSnPhAH0hXijZoxUoTEEL5RzSyvOow=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
+{% endblock additional_css %}
+{% block inline_javascript %}
+  <script>
+    globalThis.currentplay = {};
+    globalThis.playlists = [];
+    globalThis.viewed = [];
+    globalThis.player = null;
+    let endedHandler = function() {
+      let next_audio = get_next_audio();
+      if (next_audio) {
+        episode_viewed(globalThis.currentplay.episode.datasource.provider.shortname, globalThis.currentplay.episode.episode_id);
+        update_player(next_audio);
+      }
+    }
+
+    function remove_selectedaudioclass() {
+      // Remove the css class ".selected-audio" from all elements
+      let elements = document.querySelectorAll(".selected-audio");
+      elements.forEach(function(value) {
+        value.classList.remove("selected-audio");
+      })
+    }
+
+    function create_player() {
+      // Initialize the player for the first time and define it in the global vars
+      globalThis.player = videojs('podcast-player', {
+        controlBar: {
+          remainingTimeDisplay: {
+            displayNegative: false
+          }
+        },
+        autoplay: false,
+        controls: true,
+        loop: false,
+        preload: "auto",
+        poster: "/static/images/player.jpg",
+        audioPosterMode: true,
+        responsive: true,
+        aspectRatio: "16:9"
+      });
+    }
+
+    function select_audio(provider_shorname, episode_id) {
+      // Event onclick from the playlist to listen a specific audio
+      globalThis.player.off('ended', endedHandler);
+      globalThis.playlists.forEach(function(value) {
+        if (provider_shorname === value.episode.datasource.provider.shortname) {
+          if (episode_id === value.episode.episode_id) {
+            update_player(value);
+          }
+        }
+      })
+    }
+
+    function update_player(data) {
+      // Change the player settings with the new audio provider in input
+      globalThis.currentplay = data;
+      globalThis.player.src({
+        type: "audio/mp3",
+        src: "/persist/" + globalThis.currentplay.episode.datasource.provider.shortname + "_" + globalThis.currentplay.episode.episode_id + ".mp3"
+      });
+
+      globalThis.player.autoplay(true);
+      globalThis.player.on('ended', endedHandler);
+      remove_selectedaudioclass();
+      let currentplayelem = document.getElementById(globalThis.currentplay.episode.datasource.provider.shortname + "_" + globalThis.currentplay.episode.episode_id);
+      currentplayelem.classList.add("selected-audio");
+    }
+
+    function change_playervolume(percentage) {
+      // Change the volume from onclick button
+      globalThis.player.volume(percentage / 100);
+    }
+
+    function episode_viewed(provider_shorname, episode_id) {
+      // Set episode to viewed after complited
+      let current_player = videojs("podcast-player");
+      let current_src = current_player.src().replace("/persist/", "");
+      console.log(current_src)
+      let fullname = provider_shorname + "_" + episode_id;
+      if (!globalThis.viewed.includes(fullname)) {
+        globalThis.viewed.push(fullname);
+        let csrf_token = document.getElementById("csrfmiddlewaretoken");
+        const reqopt = {
+          method: "PUT",
+          body: JSON.stringify({}),
+          credentials: "same-origin",
+          headers: {
+            "X-CSRFToken": csrf_token.value
+          }
+        }
+        fetch("/api/episode/viewed/" + provider_shorname + "/" + episode_id + "/", reqopt).catch(error => {
+          console.log(error);
+        });
+      }
+    }
+
+    function get_next_audio() {
+      // Prepare the next audio objects from the playlist
+      let matched = false;
+      let out = null;
+      globalThis.playlists.forEach(function(value) {
+        if (matched) {
+          out = value;
+          return
+        }
+        if (globalThis.currentplay === value) {
+          matched = true;
+        }
+      });
+      return out;
+    }
+
+    function popolate_html(data) {
+      // Fetch the playlist objects from the API and popolate the HTML
+      let counter = 0;
+      let basehtml = document.getElementById("playlist");
+      data.forEach(function(value) {
+        if (counter == 0) {
+          globalThis.currentplay = value;
+        }
+        globalThis.playlists.push(value);
+        let content = '<li id="' + value.episode.datasource.provider.shortname + '_' + value.episode.episode_id + '" class="list-group-item bg-dark text-white fs-14px border-info">';
+        content += '<a class="text-white text-decoration-none" onclick=select_audio("' + value.episode.datasource.provider.shortname + '","' + value.episode.episode_id + '")>';
+        content += '<i class="' + value.episode.datasource.provider.icon + '" style="color: ' + value.episode.datasource.provider.color + '"></i>';
+        content += '<span class="badge bg-success"> ' + value.episode.datasource.name + '</span> ' + value.episode.name;
+        content += '</a></li>';
+        basehtml.innerHTML += content;
+        counter += 1;
+      });
+      update_player(globalThis.currentplay);
+    }
+    async function get_playlist() {
+      // Fetch the playlist from API
+      const req = await fetch("/api/playlist/");
+      const response = await req.json();
+      return response;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      get_playlist().then(data => {
+        create_player();
+        popolate_html(data);
+      });
+    });
+  </script>
+{% endblock inline_javascript %}
+{% block content %}
+  <h1 class="text-center p-1">Player</h1>
+  <input type="hidden" id="csrfmiddlewaretoken" value="{{ csrf_token }}" />
+  <div class="row">
+    <div class="col-12 col-md-6">
+      <div class="card bg-dark text-white text-center">
+        <div class="card-body">
+          <video id="podcast-player" class="video-js">
+          </video>
+        </div>
+        <p>Volume Settings</p>
+        <div class="btn-group">
+          <button onclick="change_playervolume(10);"
+                  type="button"
+                  class="btn btn-info btn-sm border border-secondary">10%</button>
+          <button onclick="change_playervolume(20);"
+                  type="button"
+                  class="btn btn-info btn-sm border border-secondary">20%</button>
+          <button onclick="change_playervolume(30);"
+                  type="button"
+                  class="btn btn-info btn-sm border border-secondary">30%</button>
+        </div>
+        <div class="btn-group">
+          <button onclick="change_playervolume(40);"
+                  type="button"
+                  class="btn btn-secondary btn-sm text-white border border-primary">40%</button>
+          <button onclick="change_playervolume(50);"
+                  type="button"
+                  class="btn btn-secondary btn-sm text-white border border-primary">50%</button>
+          <button onclick="change_playervolume(60);"
+                  type="button"
+                  class="btn btn-secondary btn-sm text-white border border-primary">60%</button>
+        </div>
+        <div class="btn-group">
+          <button onclick="change_playervolume(70);"
+                  type="button"
+                  class="btn btn-light btn-sm border border-secondary">70%</button>
+          <button onclick="change_playervolume(80);"
+                  type="button"
+                  class="btn btn-light btn-sm border border-secondary">80%</button>
+          <button onclick="change_playervolume(90);"
+                  type="button"
+                  class="btn btn-light btn-sm border border-secondary">90%</button>
+        </div>
+        <button onclick="change_playervolume(100);"
+                type="button"
+                class="btn btn-success btn-sm">100%</button>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 pt-2">
+      <div class="card bg-dark text-white text-center">
+        <div class="card-header border-primary">
+          <i class="fa-solid fa-list"></i> Playlist
+        </div>
+        <div class="card-body">
+          <ul id="playlist"
+              class="list-group list-group-flush d-flex align-items-center">
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
