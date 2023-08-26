@@ -60,6 +60,7 @@ def get_audio(input_url: str, fname: str) -> CommonResponse:
                     "quiet": True,
                     "paths": {"home": settings.PERSIST_AUDIO_ROOTDIR},
                     "outtmpl": "%s" % fname,
+                    "noprogress": True,
                     "postprocessors": [
                         {
                             "key": "FFmpegExtractAudio",

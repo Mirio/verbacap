@@ -15,7 +15,9 @@ def download_episode_yt(episode_id) -> CommonResponse:
     out = CommonResponse()
     try:
         episode = Episode.objects.get(episode_id=episode_id)
-        download = get_audio(input_url=episode.target, fname=episode_id)
+        download = get_audio(input_url=episode.target, fname="yt_%s" % episode_id)
+        episode.is_downloaded = True
+        episode.save()
         out.message = download.message
         out.status = download.status
     except Episode.DoesNotExist:

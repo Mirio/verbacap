@@ -1,3 +1,6 @@
+from os import remove
+from os.path import exists
+
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import resolve, reverse
@@ -9,6 +12,12 @@ from core.models import DataSource, Episode, Playlist, Provider
 
 # Create your tests here.
 class ApiUrl_Test(TestCase):
+    def tearDown(self):
+        files_todelete = ["/tmp/a.mp3", "/tmp/yt__NeP0RqACU.mp3"]
+        for fname in files_todelete:
+            if exists(fname):
+                remove(fname)
+
     def setUp(self):
         Provider.objects.create(name="Youtube", icon="aaaa", color="#fff", shortname="yt")
         provider = Provider.objects.get(name="Youtube")
@@ -24,6 +33,7 @@ class ApiUrl_Test(TestCase):
             datasource=datasource,
             episode_date=timezone.now(),
             episode_id="__NeP0RqACU",
+            is_downloaded=True,
             target="https://www.youtube.com/watch?v=__NeP0RqACU",
         )
         Episode.objects.create(
@@ -52,15 +62,38 @@ class ApiUrl_Test(TestCase):
         self.assertEqual(response.json()[0]["episode"]["name"], "Introducing the shorter side of YouTube")
         response = client.get("/api/episode/")
         self.assertEqual(response.json()[0]["name"], "Introducing the shorter side of YouTube")
-        response = client.post("/api/playlist/edit/yt/xxxx/", {})
+        # Add episode in the playlist
+        response = client.put("/api/playlist/edit/yt/xxxx/", {})
         self.assertEqual(response.json(), {"status": "error", "message": "Episode not found.", "value": None})
-        response = client.post("/api/playlist/edit/xyz/__NeP0RqACU/", {})
+        response = client.put("/api/playlist/edit/xyz/__NeP0RqACU/", {})
         self.assertEqual(response.json(), {"status": "error", "message": "Provider not found.", "value": None})
-        response = client.post("/api/playlist/edit/ytc/__NeP0RqACU/", {})
+        response = client.put("/api/playlist/edit/ytc/__NeP0RqACU/", {})
         self.assertEqual(response.json(), {"status": "error", "message": "Datasource not found.", "value": None})
-        response = client.post("/api/playlist/edit/yt/__NeP0RqACU/", {})
+        response = client.put("/api/playlist/edit/yt/__NeP0RqACU/", {})
         self.assertEqual(response.json(), {"status": "success", "message": "Already in the playlist.", "value": None})
-        response = client.post("/api/playlist/edit/yt/thA_T13Wnqo/", {})
+        response = client.put("/api/playlist/edit/yt/thA_T13Wnqo/", {})
+        self.assertEqual(response.json(), {"message": None, "status": "success", "value": None})
+        # Delete episode from the playlist
+        response = client.delete("/api/playlist/edit/yt/xxxx/", {})
+        self.assertEqual(response.json(), {"status": "error", "message": "Episode not found.", "value": None})
+        response = client.delete("/api/playlist/edit/xyz/__NeP0RqACU/", {})
+        self.assertEqual(response.json(), {"status": "error", "message": "Provider not found.", "value": None})
+        response = client.delete("/api/playlist/edit/ytc/__NeP0RqACU/", {})
+        self.assertEqual(response.json(), {"status": "error", "message": "Datasource not found.", "value": None})
+        response = client.delete("/api/playlist/edit/yt/__NeP0RqACU/", {})
+        self.assertEqual(response.json(), {"status": "success", "message": "Delete from playlist.", "value": None})
+        response = client.delete("/api/playlist/edit/yt/__NeP0RqACU/", {})
+        self.assertEqual(
+            response.json(), {"message": "The episode is not in the playlist.", "status": "done", "value": None}
+        )
+        # Episode Viewed
+        response = client.put("/api/episode/viewed/yt/xxxx/", {})
+        self.assertEqual(response.json(), {"status": "error", "message": "Episode not found.", "value": None})
+        response = client.put("/api/episode/viewed/xyz/__NeP0RqACU/", {})
+        self.assertEqual(response.json(), {"status": "error", "message": "Provider not found.", "value": None})
+        response = client.put("/api/episode/viewed/ytc/__NeP0RqACU/", {})
+        self.assertEqual(response.json(), {"status": "error", "message": "Datasource not found.", "value": None})
+        response = client.put("/api/episode/viewed/yt/thA_T13Wnqo/", {})
         self.assertEqual(response.json(), {"message": None, "status": "success", "value": None})
 
 
