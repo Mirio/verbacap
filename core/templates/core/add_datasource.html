@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+  VerbaCap - Add New Datasource
+{% endblock title %}
+{% block content %}
+  <h1 class="text-center p-1">Add new Datasource</h1>
+  <input type="hidden" id="csrfmiddlewaretoken" value="{{ csrf_token }}" />
+  <p class="text-center">
+    The datasource is a generic interface for the channel, podcast account or something like that.
+  </p>
+  <div class="row">
+    <div class="col-12 col-md-6 d-grid pb-2">
+      <a href="{% url 'yt-add-channel' %}" class="btn btn-primary btn-lg"><i class="fa-brands fa-youtube"></i> Add Youtube Channel</a>
+    </div>
+    <div class="col-12 col-md-6 d-grid pb-2">
+      <button type="button" class="btn btn-primary btn-lg disabled">
+        <i class="fa-brands fa-youtube"></i> Add Youtube Playlist
+      </button>
+    </div>
+  </div>
+{% endblock content %}

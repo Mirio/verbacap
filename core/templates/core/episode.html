@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}
+  VerbaCap - Episodes
+{% endblock title %}
+{% block additional_javascript %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"
+          integrity="sha512-93wYgwrIFL+b+P3RvYxi/WUFRXXUDSLCT2JQk9zhVGXuS2mHl2axj6d+R6pP+gcU5isMHRj1u0oYE/mWyt/RjA=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+{% endblock additional_javascript %}
+{% block additional_css %}
+{% endblock additional_css %}
+{% block inline_javascript %}
+  <script>
+    function add_episode(provider_shorname, episode_id) {
+      let csrf_token = document.getElementById("csrfmiddlewaretoken");
+      let basehtml = document.getElementById(provider_shorname + "_" + episode_id);
+      basehtml.innerHTML = '<i class="fa-solid fa-check"></i> Added to Queue';
+      const reqopt = {
+        method: "PUT",
+        body: JSON.stringify({}),
+        credentials: "same-origin",
+        headers: {
+          "X-CSRFToken": csrf_token.value
+        }
+      }
+      fetch("/api/playlist/edit/" + provider_shorname + "/" + episode_id + "/", reqopt).catch(error => {
+        console.log(error);
+      });
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      let episodelist_opts = {
+        valueNames: ["episode_name", "datasource"],
+        pagination: true,
+        page: 25
+      }
+      let episodelist = new List("episode-lists", episodelist_opts);
+    });
+  </script>
+{% endblock inline_javascript %}
+{% block content %}
+  <h1 class="text-center p-1">Episodes</h1>
+  <input type="hidden" id="csrfmiddlewaretoken" value="{{ csrf_token }}" />
+  <div id="episode-lists">
+    <div class="row">
+      <div class="col-12 col-md-3 offset-md-6 pb-3 d-grid">
+        <a href="{% url 'add-datasource' %}" class="btn btn-success"><i class="fa-solid fa-plus"></i> Add Datasource</a>
+      </div>
+      <div class="col-12 offset-md-0 col-md-3 pb-3 d-grid">
+        <a href="{% url 'delete-datasource' %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i> Delete Datasource</a>
+      </div>
+      <div class="col-12 col-md-4 offset-md-8 pb-3 d-grid">
+        <input class="search form-control" placeholder="Search..." />
+      </div>
+    </div>
+    <ul class="list row list-unstyled">
+      {% for episode in episodes %}
+        <li class="col-12 col-md-3 pb-3">
+          <div class="card bg-dark episode-card">
+            <div class="card-header text-center border-primary">
+              <span class="badge rounded-pill"
+                    style="background-color: {{ episode.datasource.provider.color }}">{{ episode.datasource.provider }}</span>
+              <span class="badge rounded-pill text-bg-light">{{ episode.datasource.name }}</span>
+            </div>
+            <div class="card-body text-center">
+              <p>
+                <i class="fa-solid fa-calendar-day"></i> {{ episode.episode_date }}
+              </p>
+              <p class="card-text text-center episode_name">{{ episode.name | truncatechars:80 }}</p>
+              <div class="d-grid mx-auto">
+                {% if episode.is_playlist_present %}
+                  <button id="{{ episode.datasource.provider.shortname }}_{{ episode.episode_id }}"
+                          type="button"
+                          class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-check"></i> Already in the playlist
+                  </button>
+                {% else %}
+                  <a href="#"
+                     onclick="add_episode('{{ episode.datasource.provider.shortname }}','{{ episode.episode_id }}')">
+                    <button id="{{ episode.datasource.provider.shortname }}_{{ episode.episode_id }}"
+                            type="button"
+                            class="btn btn-success btn-sm">
+                      <i class="fa-solid fa-plus"></i> Add to playlist
+                    </button>
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+    <div class="row">
+      <div class="col-2 offset-8 col-md-2 offset-md-10">
+        <ul class="pagination">
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

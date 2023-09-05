@@ -16,7 +16,10 @@ def get_rssurl(input_url: str) -> CommonResponse:
         out.status = "error"
         out.message = "Not a youtube url"
     else:
-        req = requests.get(url=input_url, cookies={"CONSENT": "YES+"})
+        # \/ Fake Generated SOCS, FYI "CAESE"+base64encode(msg/wrules)
+        req = requests.get(
+            url=input_url, cookies={"CONSENT": "PENDING+", "SOCS": "CAESEwgDEgk6NjE5NDB97TcaAml9IAEaBgiAsL-nBg"}
+        )
         soup = BeautifulSoup(req.text, features="html.parser")
         for iter in soup.findAll("link"):
             if "type" in iter.attrs.keys():

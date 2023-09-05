@@ -14,3 +14,24 @@ body {
 .vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar {
     opacity: 1!important;
 }
+.episode-card {
+    min-height: 15rem;
+}
+.page {
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    position: relative;
+    display: block;
+    padding: var(--bs-pagination-padding-y) var(--bs-pagination-padding-x);
+    font-size: var(--bs-pagination-font-size);
+    text-decoration: none;
+    border: var(--bs-pagination-border-width) solid var(--bs-pagination-border-color);
+    background-color: #fff;
+}
+
+.active > .page, .page.active {
+    color: var(--bs-pagination-active-color);
+    z-index: 3;
+    color: var(--bs-pagination-active-color);
+    background-color: var(--bs-pagination-active-bg);
+    border-color: var(--bs-pagination-active-border-color);
+}
