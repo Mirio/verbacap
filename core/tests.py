@@ -146,3 +146,42 @@ class Models_TestCase(TestCase):
         response_logged = client.get("/player/")
         self.assertEqual(response_logged.status_code, 200)
         client.logout()
+
+
+class Views_TestCase(TestCase):
+    def setUp(self):
+        Provider.objects.create(name="Youtube", icon="aaaa", color="#fff")
+        provider = Provider.objects.get(name="Youtube")
+        DataSource.objects.create(
+            name="Youtube Official Channel",
+            provider=provider,
+            target="https://www.youtube.com/feeds/videos.xml?channel_id=UCBR8-60-B28hp2BmDPdntcQ",
+        )
+        datasource = DataSource.objects.get(name="Youtube Official Channel")
+        Episode.objects.create(
+            name="Introducing the shorter side of YouTube",
+            datasource=datasource,
+            episode_date=timezone.now(),
+            target="https://www.youtube.com/watch?v=__NeP0RqACU",
+        )
+        episode = Episode.objects.get(name="Introducing the shorter side of YouTube")
+        Playlist.objects.create(episode=episode, order_num=1)
+        user = get_user_model().objects.create_user("testuser")
+        user.set_password("1234")
+        user.save()
+
+    def test_addatasourceview(self):
+        client = Client()
+        response = client.get("/add-datasource/")
+        self.assertEqual(response.status_code, 302)
+        client.login(username="testuser", password="1234")
+        response_logged = client.get("/add-datasource/")
+        self.assertEqual(response_logged.status_code, 200)
+
+    def test_episodeview(self):
+        client = Client()
+        response = client.get("/episode/")
+        self.assertEqual(response.status_code, 302)
+        client.login(username="testuser", password="1234")
+        response_logged = client.get("/episode/")
+        self.assertEqual(response_logged.status_code, 200)

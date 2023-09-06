@@ -32,3 +32,26 @@ class HomepageView(LoginRequiredMixin, View):
 class PlayerView(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, "core/player.html")
+
+
+class AddDataSourceView(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, "core/add_datasource.html")
+
+
+class DeleteDataSourceView(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, "core/delete_datasource.html")
+
+
+class EpisodeView(LoginRequiredMixin, View):
+    def get(self, request):
+        episode_extended = []
+        playlist = Playlist.objects.all()
+        for iter_episode in Episode.objects.all().order_by("-episode_date"):
+            episodeobj = iter_episode
+            for iter_playlist in playlist:
+                if iter_episode.target == iter_playlist.episode.target:
+                    episodeobj.is_playlist_present = True
+            episode_extended.append(episodeobj)
+        return render(request, "core/episode.html", context={"episodes": episode_extended})

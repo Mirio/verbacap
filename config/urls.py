@@ -7,13 +7,20 @@ from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
 
-from core.views import HomepageView, PlayerView
+from core.views import AddDataSourceView, DeleteDataSourceView, EpisodeView, HomepageView, PlayerView
+from youtube.views import AddChannelView, DeleteChannelView
 
 urlpatterns = [
     # Podcast
     path("", HomepageView.as_view(), name="homepage"),
     path("player/", PlayerView.as_view(), name="player"),
+    path("episode/", EpisodeView.as_view(), name="episode"),
+    path("add-datasource/", AddDataSourceView.as_view(), name="add-datasource"),
+    path("delete-datasource/", DeleteDataSourceView.as_view(), name="delete-datasource"),
     *static("persist/", document_root=settings.PERSIST_AUDIO_ROOTDIR),
+    # Youtube Urls
+    path("yt/add-channel/", AddChannelView.as_view(), name="yt-add-channel"),
+    path("yt/delete-channel/", DeleteChannelView.as_view(), name="yt-delete-channel"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
