@@ -3,7 +3,6 @@ name: Docker build
 on:
   workflow_run:
     workflows: [ "CI" , "CodeCov" ]
-    branches: [ "main", "develop" ]
     types:
       - completed
 

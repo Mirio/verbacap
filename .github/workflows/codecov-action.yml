@@ -6,13 +6,10 @@ env:
   COMPOSE_DOCKER_CLI_BUILD: 1
 
 on:
-  pull_request:
-    branches: ['master', 'main', 'develop']
-    paths-ignore: ['docs/**']
-
-  push:
-    branches: ['master', 'main', 'develop']
-    paths-ignore: ['docs/**']
+  workflow_run:
+    workflows: [ "CI" ]
+    types:
+      - completed
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
