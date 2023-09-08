@@ -6,10 +6,11 @@ env:
   COMPOSE_DOCKER_CLI_BUILD: 1
 
 on:
-  workflow_run:
-    workflows: [CI]
-    types:
-      - completed
+  push:
+    branches: [ "main", "develop"]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "main", "develop"]
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
