@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
+from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
@@ -12,15 +13,25 @@ from youtube.views import AddChannelView, DeleteChannelView
 
 urlpatterns = [
     # Podcast
-    path("", HomepageView.as_view(), name="homepage"),
-    path("player/", PlayerView.as_view(), name="player"),
-    path("episode/", EpisodeView.as_view(), name="episode"),
-    path("add-datasource/", AddDataSourceView.as_view(), name="add-datasource"),
-    path("delete-datasource/", DeleteDataSourceView.as_view(), name="delete-datasource"),
+    path("", cache_page(settings.CACHE_DEFAULT_TTL)(HomepageView.as_view()), name="homepage"),
+    path("player/", cache_page(settings.CACHE_DEFAULT_TTL)(PlayerView.as_view()), name="player"),
+    path("episode/", cache_page(settings.CACHE_SMART_TTL)(EpisodeView.as_view()), name="episode"),
+    path(
+        "add-datasource/", cache_page(settings.CACHE_DEFAULT_TTL)(AddDataSourceView.as_view()), name="add-datasource"
+    ),
+    path(
+        "delete-datasource/",
+        cache_page(settings.CACHE_DEFAULT_TTL)(DeleteDataSourceView.as_view()),
+        name="delete-datasource",
+    ),
     *static("persist/", document_root=settings.PERSIST_AUDIO_ROOTDIR),
     # Youtube Urls
-    path("yt/add-channel/", AddChannelView.as_view(), name="yt-add-channel"),
-    path("yt/delete-channel/", DeleteChannelView.as_view(), name="yt-delete-channel"),
+    path("yt/add-channel/", cache_page(settings.CACHE_DEFAULT_TTL)(AddChannelView.as_view()), name="yt-add-channel"),
+    path(
+        "yt/delete-channel/",
+        cache_page(settings.CACHE_DEFAULT_TTL)(DeleteChannelView.as_view()),
+        name="yt-delete-channel",
+    ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management

@@ -347,3 +347,6 @@ SPECTACULAR_SETTINGS = {
 }
 # Your stuff...
 # ------------------------------------------------------------------------------
+# 24 Hours
+CACHE_DEFAULT_TTL = (60 * 60) * 24
+CACHE_SMART_TTL = 60 * 15

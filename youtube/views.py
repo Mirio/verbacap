@@ -1,9 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.shortcuts import render
 from django.views import View
 
 from core.models import DataSource, Provider
 from youtube.forms import AddChannelForm
+from youtube.tasks import import_episodes_yt
 
 
 # Create your views here.
@@ -25,6 +27,7 @@ class AddChannelView(LoginRequiredMixin, View):
                 if not match:
                     DataSource.objects.create(provider=provider, target=target.lower(), name=name)
                     outmsg = "Added."
+                    transaction.on_commit(import_episodes_yt.delay)
                 else:
                     status = 422
                     outmsg = "Already present."

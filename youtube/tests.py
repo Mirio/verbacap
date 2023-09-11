@@ -67,7 +67,7 @@ class Services_TestCase(TestCase):
 
     def test_import_episodes(self):
         obj = import_episodes_yt()
-        self.assertEqual(obj.__dict__, {"status": "success", "message": "done", "value": None})
+        self.assertEqual(obj, {"status": "success", "message": "done", "value": None})
 
     def test_download_episode_yt(self):
         obj = download_episode_yt(episode_id="__NeP0RqACU")

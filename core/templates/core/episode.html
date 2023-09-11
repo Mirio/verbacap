@@ -67,7 +67,9 @@
               <p>
                 <i class="fa-solid fa-calendar-day"></i> {{ episode.episode_date }}
               </p>
-              <p class="card-text text-center episode_name">{{ episode.name | truncatechars:80 }}</p>
+              <p class="card-text text-center episode_name">{{ episode.name | truncatechars:60 }}</p>
+            </div>
+            <div class="card-footer">
               <div class="d-grid mx-auto">
                 {% if episode.is_playlist_present %}
                   <button id="{{ episode.datasource.provider.shortname }}_{{ episode.episode_id }}"
@@ -77,6 +79,7 @@
                   </button>
                 {% else %}
                   <a href="#"
+                     class="d-grid"
                      onclick="add_episode('{{ episode.datasource.provider.shortname }}','{{ episode.episode_id }}')">
                     <button id="{{ episode.datasource.provider.shortname }}_{{ episode.episode_id }}"
                             type="button"
