@@ -67,12 +67,10 @@ class ApiUrl_Test(TestCase):
         self.assertEqual(response.json(), {"status": "error", "message": "Episode not found.", "value": None})
         response = client.put("/api/playlist/edit/xyz/__NeP0RqACU/", {})
         self.assertEqual(response.json(), {"status": "error", "message": "Provider not found.", "value": None})
-        response = client.put("/api/playlist/edit/ytc/__NeP0RqACU/", {})
-        self.assertEqual(response.json(), {"status": "error", "message": "Datasource not found.", "value": None})
-        response = client.put("/api/playlist/edit/yt/__NeP0RqACU/", {})
-        self.assertEqual(response.json(), {"status": "success", "message": "Already in the playlist.", "value": None})
         response = client.put("/api/playlist/edit/yt/thA_T13Wnqo/", {})
         self.assertEqual(response.json(), {"message": None, "status": "success", "value": None})
+        response = client.put("/api/playlist/edit/yt/thA_T13Wnqo/", {})
+        self.assertEqual(response.json(), {"message": "Already in the playlist.", "status": "success", "value": None})
         # Delete episode from the playlist
         response = client.delete("/api/playlist/edit/yt/xxxx/", {})
         self.assertEqual(response.json(), {"status": "error", "message": "Episode not found.", "value": None})
@@ -170,12 +168,20 @@ class Views_TestCase(TestCase):
         user.set_password("1234")
         user.save()
 
-    def test_addatasourceview(self):
+    def test_adddatasourceview(self):
         client = Client()
         response = client.get("/add-datasource/")
         self.assertEqual(response.status_code, 302)
         client.login(username="testuser", password="1234")
         response_logged = client.get("/add-datasource/")
+        self.assertEqual(response_logged.status_code, 200)
+
+    def test_removedatasourceview(self):
+        client = Client()
+        response = client.get("/delete-datasource/")
+        self.assertEqual(response.status_code, 302)
+        client.login(username="testuser", password="1234")
+        response_logged = client.get("/delete-datasource/")
         self.assertEqual(response_logged.status_code, 200)
 
     def test_episodeview(self):

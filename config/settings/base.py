@@ -113,7 +113,7 @@ AUTHENTICATION_BACKENDS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
-LOGIN_REDIRECT_URL = "users:redirect"
+LOGIN_REDIRECT_URL = "homepage"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 LOGIN_URL = "account_login"
 
@@ -350,3 +350,9 @@ SPECTACULAR_SETTINGS = {
 # 24 Hours
 CACHE_DEFAULT_TTL = (60 * 60) * 24
 CACHE_SMART_TTL = 60 * 15
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:8080",
+    "http://127.0.0.1:8000",
+    "http://localhost:8080",
+    "http://localhost:8000",
+]

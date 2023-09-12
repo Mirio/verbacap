@@ -277,3 +277,5 @@ verbacap/media/
 
 develop.env
 production.env
+
+example/*
