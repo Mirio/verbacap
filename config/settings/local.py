@@ -15,8 +15,8 @@ ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#caches
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "LOCATION": "",
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": env("CELERY_BROKER_URL"),
     }
 }
 
@@ -59,3 +59,9 @@ CELERY_TASK_EAGER_PROPAGATES = True
 # Your stuff...
 # ------------------------------------------------------------------------------
 PERSIST_AUDIO_ROOTDIR = env("PERSIST_AUDIO_ROOTDIR", default="/tmp")
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+COMPRESS_OFFLINE = True

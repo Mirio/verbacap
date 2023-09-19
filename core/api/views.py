@@ -49,31 +49,33 @@ class PlaylistEditView(APIView):
 
     def put(self, request, provider_shortname, episode_id, format=None):
         out = CommonResponse()
+        episode = None
         try:
             provider = Provider.objects.get(shortname=provider_shortname)
-            datasource = DataSource.objects.get(provider=provider)
-            episode = Episode.objects.get(datasource=datasource, episode_id=episode_id)
-            try:
-                Playlist.objects.get(episode=episode)
-                out.status = "success"
-                out.message = "Already in the playlist."
-            except Playlist.DoesNotExist:
-                ordernum_max = Playlist.objects.aggregate(Max("order_num"))["order_num__max"]
-                if not ordernum_max:
-                    ordernum_max = 0
-                download_episode(provider_shortname=provider.shortname, episode_id=episode.episode_id)
-                obj = Playlist(order_num=ordernum_max + 1, episode=episode)
-                obj.save()
-                out.status = "success"
+            episodes = Episode.objects.filter(episode_id=episode_id)
+            for iter in episodes.all():
+                if iter.datasource.provider.shortname == provider_shortname:
+                    episode = iter
+                    break
+            if episode:
+                try:
+                    Playlist.objects.get(episode=episode)
+                    out.status = "success"
+                    out.message = "Already in the playlist."
+                except Playlist.DoesNotExist:
+                    ordernum_max = Playlist.objects.aggregate(Max("order_num"))["order_num__max"]
+                    if not ordernum_max:
+                        ordernum_max = 0
+                    download_episode(provider_shortname=provider.shortname, episode_id=episode.episode_id)
+                    obj = Playlist(order_num=ordernum_max + 1, episode=episode)
+                    obj.save()
+                    out.status = "success"
+            else:
+                out.message = "Episode not found."
+                out.status = "error"
         except Provider.DoesNotExist:
             out.status = "error"
             out.message = "Provider not found."
-        except Episode.DoesNotExist:
-            out.status = "error"
-            out.message = "Episode not found."
-        except DataSource.DoesNotExist:
-            out.status = "error"
-            out.message = "Datasource not found."
         return Response(out.__dict__)
 
 

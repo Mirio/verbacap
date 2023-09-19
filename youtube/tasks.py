@@ -2,6 +2,7 @@ from datetime import datetime
 from time import mktime
 
 from celery import Celery
+from django.core.cache import cache
 
 from core.models import DataSource, Episode, Provider
 from core.shared import CommonResponse
@@ -40,14 +41,14 @@ def import_episodes_yt() -> CommonResponse:
                 for feed in rss_feed:
                     check_episode = Episode.objects.filter(episode_id=feed["yt_videoid"])
                     if not check_episode:
-                        obj = Episode(
+                        Episode.objects.create(
                             episode_id=feed["yt_videoid"],
                             name=feed["title"],
                             datasource=datasource_obj,
                             episode_date=datetime.fromtimestamp(mktime(feed["published_parsed"])),
                             target=feed["link"],
                         )
-                        obj.save()
+                        cache.clear()
                 out.message = "done"
                 out.status = "success"
             else:
@@ -56,4 +57,4 @@ def import_episodes_yt() -> CommonResponse:
     except Provider.DoesNotExist:
         out.status = "error"
         out.message = "Youtube provider not exists"
-    return out
+    return out.__dict__

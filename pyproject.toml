@@ -2,6 +2,7 @@
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "--ds=config.settings.test --reuse-db"
+norecursedirs = "example"
 python_files = [
     "tests.py",
     "test_*.py",
@@ -10,7 +11,7 @@ python_files = [
 # ==== Coverage ====
 [tool.coverage.run]
 include = ["verbacap/**", "core/**", "youtube/**"]
-omit = ["*/migrations/*", "*/tests/*"]
+omit = ["*/migrations/*", "*/tests/*", "*/example/*"]
 plugins = ["django_coverage_plugin"]
 
 
@@ -28,7 +29,7 @@ known_first_party = [
     "verbacap",
     "config",
 ]
-skip = ["venv/"]
+skip = ["venv/", "example/"]
 skip_glob = ["**/migrations/*.py"]
 
 

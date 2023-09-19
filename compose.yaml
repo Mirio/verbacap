@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  redis:
+    image: docker.io/redis:7-alpine
+    restart: always
+    container_name: verbacap-redis
+
+  psql:
+    image: docker.io/postgres:15-alpine
+    restart: always
+    container_name: verbacap-psql
+    environment:
+      POSTGRES_PASSWORD: "changeme"
+    volumes:
+      - ./example/psql:/var/lib/postgresql/data
+
+  web:
+    #build: .
+    image: ghcr.io/mirio/verbacap:develop
+    restart: always
+    container_name: verbacap-web
+    command: "run"
+    ports:
+      - 8080:8080
+    depends_on:
+      - redis
+      - psql
+    environment:
+      DATABASE_URL: "postgres://postgres:changeme@verbacap-psql:5432/postgres"
+      DJANGO_SECRET_KEY: "Chang4M4"
+      DJANGO_DEBUG: "False"
+      CELERY_BROKER_URL: "redis://verbacap-redis:6379/0"
+      PERSIST_AUDIO_ROOTDIR: "/persist"
+    volumes:
+      - ./example/web:/persist
+
+  celery:
+    image: ghcr.io/mirio/verbacap:develop
+    #build: .
+    restart: always
+    container_name: verbacap-celery
+    command: "celery"
+    depends_on:
+      - web
+    environment:
+      DATABASE_URL: "postgres://postgres:changeme@verbacap-psql:5432/postgres"
+      DJANGO_SECRET_KEY: "Chang4M4"
+      DJANGO_DEBUG: "False"
+      CELERY_BROKER_URL: "redis://verbacap-redis:6379/0"
+      PERSIST_AUDIO_ROOTDIR: "/persist"
+    volumes:
+      - ./example/web:/persist
