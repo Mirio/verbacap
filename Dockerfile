@@ -13,7 +13,7 @@ RUN apk add --no-cache bash ffmpeg python3 py3-pip nginx sudo && adduser -D -s "
     && echo "app ALL = NOPASSWD: /bin/chown,/usr/sbin/nginx" > /etc/sudoers.d/app && chmod 400 /etc/sudoers.d/app
 
 USER "${USERNAME}"
-COPY --chown="${USERNAME}:${USERNAME}" . "/home/${USERNAME}"
+COPY . "/home/${USERNAME}"
 COPY "entrypoint.bash" "/entrypoint.bash"
 WORKDIR "/home/${USERNAME}"
 

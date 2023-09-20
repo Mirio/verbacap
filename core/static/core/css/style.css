@@ -31,7 +31,6 @@ body {
 .active > .page, .page.active {
     color: var(--bs-pagination-active-color);
     z-index: 3;
-    color: var(--bs-pagination-active-color);
     background-color: var(--bs-pagination-active-bg);
     border-color: var(--bs-pagination-active-border-color);
 }

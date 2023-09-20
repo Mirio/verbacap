@@ -22,6 +22,7 @@ concurrency:
 
 jobs:
   linter:
+    name: Linter
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository
@@ -37,9 +38,9 @@ jobs:
 
   # With no caching at all the entire ci process takes 4m 30s to complete!
   pytest:
+    name: Pytest
     runs-on: ubuntu-latest
-    needs: linter
-
+    needs: Linter
     services:
       postgres:
         image: postgres:15
@@ -94,8 +95,9 @@ jobs:
           path: coverage.xml
 
   dockerbuild:
+    name: DockerBuild
     runs-on: ubuntu-latest
-    needs: pytest
+    needs: Pytest
     permissions:
       contents: read
       packages: write
@@ -145,7 +147,7 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
-    needs: pytest
+    needs: Pytest
     steps:
       - uses: actions/checkout@v4
         with:
