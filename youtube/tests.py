@@ -1,3 +1,4 @@
+from os import remove
 from os.path import exists
 
 from django.contrib.auth import get_user_model
@@ -5,19 +6,26 @@ from django.test import Client, TestCase
 from django.utils import timezone
 
 from core.models import DataSource, Episode, Playlist, Provider
-from youtube.services import get_audio, get_rss, get_rssurl
-from youtube.tasks import download_episode_yt, import_episodes_yt
+from youtube.services import get_audio, get_channel_rssurl, get_playlist_rssurl, get_rss_data
+from youtube.tasks import download_episode_yt, import_episodes_yt_channels, import_episodes_yt_playlist
 
 
 # Create your tests here.
 class Services_TestCase(TestCase):
     def setUp(self):
         Provider.objects.create(name="Youtube", icon="aaaa", color="#fff", shortname="yt")
+        Provider.objects.create(name="Youtube-Playlist", icon="aaaa", color="#fff", shortname="yt-playlist")
         provider = Provider.objects.get(name="Youtube")
+        provider_playlist = Provider.objects.get(name="Youtube-Playlist")
         DataSource.objects.create(
             name="Youtube Official Channel",
             provider=provider,
             target="https://www.youtube.com/@YouTube",
+        )
+        DataSource.objects.create(
+            name="Youtube - Random Playlist",
+            provider=provider_playlist,
+            target="https://www.youtube.com/watch?v=L-PeKYY4FDY&list=PLbpi6ZahtOH5Acp2m7XRwwoi4ryCsh18P",
         )
         datasource = DataSource.objects.get(name="Youtube Official Channel")
         Episode.objects.create(
@@ -28,8 +36,14 @@ class Services_TestCase(TestCase):
             target="https://www.youtube.com/watch?v=__NeP0RqACU",
         )
 
-    def test_get_rssurl(self):
-        rssurl = get_rssurl("https://www.youtube.com/@YouTube")
+    def tearDown(self):
+        files_todelete = ["/tmp/a.mp3", "/tmp/yt___NeP0RqACU.mp3"]
+        for fname in files_todelete:
+            if exists(fname):
+                remove(fname)
+
+    def test_get_channel_rssurl(self):
+        rssurl = get_channel_rssurl("https://www.youtube.com/@YouTube")
         self.assertEqual(
             rssurl.__dict__,
             {
@@ -38,15 +52,34 @@ class Services_TestCase(TestCase):
                 "value": "https://www.youtube.com/feeds/videos.xml?channel_id=UCBR8-60-B28hp2BmDPdntcQ",
             },
         )
-        rssurl_noexists = get_rssurl("https://example.com")
+        rssurl_noexists = get_channel_rssurl("https://example.com")
         self.assertEqual(rssurl_noexists.__dict__, {"status": "error", "message": "Not a youtube url", "value": None})
 
-    def test_get_rss(self):
-        rssurl = get_rssurl("https://www.youtube.com/@YouTube")
-        self.assertEqual(type(get_rss(rssurl.value).value), list)
-        rssurl_noexists = get_rss(input_url="https://example.com")
+    def test_get_playlist_rssurl(self):
+        rssurl = get_playlist_rssurl(
+            "https://www.youtube.com/watch?v=qVxdyIsMEQo&list=PLbpi6ZahtOH7c6nDA9YG3QcyRGbZ4xDFn"
+        )
+        self.assertEqual(
+            rssurl.__dict__,
+            {
+                "message": None,
+                "status": "success",
+                "value": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLbpi6ZahtOH7c6nDA9YG3QcyRGbZ4xDFn",
+            },
+        )
+        rssurl_noplaylist = get_playlist_rssurl("https://www.youtube.com/watch?v=qVxdyIsMEQo")
+        self.assertEqual(
+            rssurl_noplaylist.__dict__, {"status": "error", "message": "Not a playlist url", "value": None}
+        )
+        rssurl_noexists = get_channel_rssurl("https://example.com")
         self.assertEqual(rssurl_noexists.__dict__, {"status": "error", "message": "Not a youtube url", "value": None})
-        rssurl_missing = get_rss(input_url="")
+
+    def test_get_rss_data(self):
+        rssurl = get_channel_rssurl("https://www.youtube.com/@YouTube")
+        self.assertEqual(type(get_rss_data(rssurl.value).value), list)
+        rssurl_noexists = get_rss_data(input_url="https://example.com")
+        self.assertEqual(rssurl_noexists.__dict__, {"status": "error", "message": "Not a youtube url", "value": None})
+        rssurl_missing = get_rss_data(input_url="")
         self.assertEqual(rssurl_missing.__dict__, {"status": "error", "message": "Input url missing", "value": None})
 
     def test_get_audio(self):
@@ -65,8 +98,12 @@ class Services_TestCase(TestCase):
             {"message": "Some errors found during downloading.", "status": "error", "value": None},
         )
 
-    def test_import_episodes(self):
-        obj = import_episodes_yt()
+    def test_import_episodes_channels(self):
+        obj = import_episodes_yt_channels()
+        self.assertEqual(obj, {"status": "success", "message": "done", "value": None})
+
+    def test_import_episodes_playlist(self):
+        obj = import_episodes_yt_playlist()
         self.assertEqual(obj, {"status": "success", "message": "done", "value": None})
 
     def test_download_episode_yt(self):
@@ -79,7 +116,14 @@ class Services_TestCase(TestCase):
 class Views_TestCase(TestCase):
     def setUp(self):
         Provider.objects.create(name="Youtube", icon="aaaa", color="#fff")
+        Provider.objects.create(name="Youtube-Playlist", icon="aaaa", color="#fff", shortname="yt-playlist")
         provider = Provider.objects.get(name="Youtube")
+        provider_playlist = Provider.objects.get(name="Youtube-Playlist")
+        DataSource.objects.create(
+            name="Youtube - Random Playlist",
+            provider=provider_playlist,
+            target="https://www.youtube.com/watch?v=L-PeKYY4FDY&list=PLbpi6ZahtOH5Acp2m7XRwwoi4ryCsh18P",
+        )
         DataSource.objects.create(
             name="Youtube Official Channel",
             provider=provider,
@@ -92,6 +136,7 @@ class Views_TestCase(TestCase):
             episode_date=timezone.now(),
             target="https://www.youtube.com/watch?v=__NeP0RqACU",
         )
+
         episode = Episode.objects.get(name="Introducing the shorter side of YouTube")
         Playlist.objects.create(episode=episode, order_num=1)
         user = get_user_model().objects.create_user("testuser")
@@ -118,8 +163,32 @@ class Views_TestCase(TestCase):
         response_post = client.post("/yt/add-channel/", {"name": "aaaa"})
         self.assertEqual(response_post.status_code, 400)
 
+        response_logged = client.get("/yt/add-playlist/")
+        self.assertEqual(response_logged.status_code, 200)
+        response_post = client.post(
+            "/yt/add-playlist/",
+            {
+                "name": "aaaa",
+                "playlist_url": "https://www.youtube.com/watch?v=qVxdyIsMEQo&list=PLbpi6ZahtOH7c6nDA9YG3QcyRGbZ4xDFn",
+            },
+        )
+        self.assertEqual(response_post.status_code, 200)
+        response_post = client.post(
+            "/yt/add-playlist/",
+            {
+                "name": "aaaa",
+                "playlist_url": "https://www.youtube.com/watch?v=qVxdyIsMEQo&list=PLbpi6ZahtOH7c6nDA9YG3QcyRGbZ4xDFn",
+            },
+        )
+        self.assertEqual(response_post.status_code, 422)
+        response_post = client.post("/yt/add-playlist/", {"name": "aaaa", "playlist_url": "https://www.youtube.it"})
+        self.assertEqual(response_post.status_code, 400)
+        response_post = client.post("/yt/add-playlist/", {"name": "aaaa"})
+        self.assertEqual(response_post.status_code, 400)
+
     def test_deletechannelview(self):
         provider = Provider.objects.get(name="Youtube")
+        provider_playlist = Provider.objects.get(name="Youtube-Playlist")
         client = Client()
         response = client.get("/yt/delete-channel/")
         self.assertEqual(response.status_code, 302)
@@ -132,4 +201,14 @@ class Views_TestCase(TestCase):
         response_post = client.post("/yt/delete-channel/", {"datasource_id": obj.pk})
         self.assertEqual(response_post.status_code, 404)
         response_post = client.post("/yt/delete-channel/", {"aaa": "foo"})
+        self.assertEqual(response_post.status_code, 400)
+        # Playlist
+        response_logged = client.get("/yt/delete-playlist/")
+        self.assertEqual(response_logged.status_code, 200)
+        obj = DataSource.objects.get(provider=provider_playlist, name="Youtube - Random Playlist")
+        response_post = client.post("/yt/delete-playlist/", {"datasource_id": obj.pk})
+        self.assertEqual(response_post.status_code, 200)
+        response_post = client.post("/yt/delete-playlist/", {"datasource_id": obj.pk})
+        self.assertEqual(response_post.status_code, 404)
+        response_post = client.post("/yt/delete-playlist/", {"aaa": "foo"})
         self.assertEqual(response_post.status_code, 400)

@@ -1,4 +1,5 @@
 from os.path import exists
+from urllib.parse import parse_qs
 
 import feedparser
 import requests
@@ -10,7 +11,7 @@ from yt_dlp.utils import DownloadError
 from core.shared import CommonResponse
 
 
-def get_rssurl(input_url: str) -> CommonResponse:
+def get_channel_rssurl(input_url: str) -> CommonResponse:
     out = CommonResponse()
     if not input_url.startswith("https://www.youtube.com/"):
         out.status = "error"
@@ -29,7 +30,22 @@ def get_rssurl(input_url: str) -> CommonResponse:
     return out
 
 
-def get_rss(input_url: str, limit: int = 10) -> CommonResponse:
+def get_playlist_rssurl(input_url: str) -> CommonResponse:
+    out = CommonResponse()
+    if not input_url.startswith("https://www.youtube.com/"):
+        out.status = "error"
+        out.message = "Not a youtube url"
+    elif "&list=" not in input_url:
+        out.status = "error"
+        out.message = "Not a playlist url"
+    else:
+        playlist_id = parse_qs(input_url)
+        out.value = "https://www.youtube.com/feeds/videos.xml?playlist_id=%s" % (playlist_id["list"][0])
+        out.status = "success"
+    return out
+
+
+def get_rss_data(input_url: str, limit: int = 10) -> CommonResponse:
     out = CommonResponse()
     counter = 0
     if input_url:

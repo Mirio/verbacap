@@ -6,7 +6,7 @@ from django.core.cache import cache
 
 from core.models import DataSource, Episode, Provider
 from core.shared import CommonResponse
-from youtube.services import get_audio, get_rss, get_rssurl
+from youtube.services import get_audio, get_channel_rssurl, get_playlist_rssurl, get_rss_data
 
 app = Celery("tasks")
 
@@ -28,16 +28,49 @@ def download_episode_yt(episode_id) -> CommonResponse:
 
 
 @app.task
-def import_episodes_yt() -> CommonResponse:
+def import_episodes_yt_playlist() -> CommonResponse:
+    out = CommonResponse()
+    try:
+        youtubeprovider = Provider.objects.get(name="Youtube-Playlist")
+        datasource = DataSource.objects.filter(provider=youtubeprovider)
+        for playlist in datasource:
+            datasource_obj = DataSource.objects.get(id=playlist.id)
+            rss_url = get_playlist_rssurl(playlist.target)
+            if rss_url.status == "success":
+                rss_feed = get_rss_data(rss_url.value).value
+                for feed in rss_feed:
+                    check_episode = Episode.objects.filter(episode_id=feed["yt_videoid"])
+                    if not check_episode:
+                        Episode.objects.create(
+                            episode_id=feed["yt_videoid"],
+                            name=feed["title"],
+                            datasource=datasource_obj,
+                            episode_date=datetime.fromtimestamp(mktime(feed["published_parsed"])),
+                            target=feed["link"],
+                        )
+                        cache.clear()
+                out.message = "done"
+                out.status = "success"
+            else:
+                out.message = "Feed Rss issue."
+                out.status = "error"
+    except Provider.DoesNotExist:
+        out.status = "error"
+        out.message = "Youtube Playlist provider not exists"
+    return out.__dict__
+
+
+@app.task
+def import_episodes_yt_channels() -> CommonResponse:
     out = CommonResponse()
     try:
         youtubeprovider = Provider.objects.get(name="Youtube")
         datasource = DataSource.objects.filter(provider=youtubeprovider)
         for channels in datasource:
             datasource_obj = DataSource.objects.get(id=channels.id)
-            rss_url = get_rssurl(channels.target)
+            rss_url = get_channel_rssurl(channels.target)
             if rss_url.status == "success":
-                rss_feed = get_rss(rss_url.value).value
+                rss_feed = get_rss_data(rss_url.value).value
                 for feed in rss_feed:
                     check_episode = Episode.objects.filter(episode_id=feed["yt_videoid"])
                     if not check_episode:

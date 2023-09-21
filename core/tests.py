@@ -13,7 +13,7 @@ from core.models import DataSource, Episode, Playlist, Provider
 # Create your tests here.
 class ApiUrl_Test(TestCase):
     def tearDown(self):
-        files_todelete = ["/tmp/a.mp3", "/tmp/yt__NeP0RqACU.mp3"]
+        files_todelete = ["/tmp/a.mp3", "/tmp/yt___NeP0RqACU.mp3"]
         for fname in files_todelete:
             if exists(fname):
                 remove(fname)
