@@ -18,7 +18,7 @@ COPY "entrypoint.bash" "/entrypoint.bash"
 WORKDIR "/home/${USERNAME}"
 
 RUN python3 -m venv "/home/${USERNAME}/venv" && . "/home/${USERNAME}/venv/bin/activate" \
-    && pip install --no-cache-dir -r requirements/local.txt
+    && pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8080
 VOLUME ["/persist"]
