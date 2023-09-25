@@ -27,5 +27,5 @@ drf-spectacular==0.26.4  # https://github.com/tfranzel/drf-spectacular
 # Additional
 feedparser==6.0.10  # https://github.com/kurtmckee/feedparser
 beautifulsoup4==4.12.2
-yt-dlp==2023.7.6 # https://github.com/yt-dlp/yt-dlp
+yt-dlp==2023.9.24 # https://github.com/yt-dlp/yt-dlp
 django-filter==23.3 # https://github.com/carltongibson/django-filter
