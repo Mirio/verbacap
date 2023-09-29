@@ -9,7 +9,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
 
 from core.views import AddDataSourceView, DeleteDataSourceView, EpisodeView, HomepageView, PlayerView
-from youtube.views import AddChannelView, DeleteChannelView
+from youtube.views import AddChannelView, AddPlaylistView, DeleteChannelView, DeletePlaylistView
 
 urlpatterns = [
     # Podcast
@@ -31,6 +31,14 @@ urlpatterns = [
         "yt/delete-channel/",
         cache_page(settings.CACHE_DEFAULT_TTL)(DeleteChannelView.as_view()),
         name="yt-delete-channel",
+    ),
+    path(
+        "yt/add-playlist/", cache_page(settings.CACHE_DEFAULT_TTL)(AddPlaylistView.as_view()), name="yt-add-playlist"
+    ),
+    path(
+        "yt/delete-playlist/",
+        cache_page(settings.CACHE_DEFAULT_TTL)(DeletePlaylistView.as_view()),
+        name="yt-delete-playlist",
     ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),

@@ -13,7 +13,7 @@ python_files = [
 include = ["verbacap/**", "core/**", "youtube/**"]
 omit = ["*/migrations/*", "*/tests/*", "*/example/*"]
 plugins = ["django_coverage_plugin"]
-
+relative_files = true
 
 # ==== black ====
 [tool.black]
