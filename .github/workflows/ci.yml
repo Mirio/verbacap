@@ -9,11 +9,11 @@ env:
 
 on:
   pull_request:
-    branches: ['master', 'main', 'develop']
+    branches: ['main', 'develop']
     paths-ignore: ['docs/**']
 
   push:
-    branches: ['master', 'main', 'develop']
+    branches: ['develop']
     paths-ignore: ['docs/**']
 
 concurrency:
@@ -95,6 +95,7 @@ jobs:
   dockerbuild:
     name: DockerBuild
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     needs: Pytest
     permissions:
       contents: read
