@@ -9,7 +9,7 @@ from youtube.tasks import import_episodes_yt_channels, import_episodes_yt_playli
 
 
 # Create your views here.
-class AddPlaylistView(LoginRequiredMixin, View):
+class Youtube_AddPlaylistView(LoginRequiredMixin, View):
     def get(self, request):
         form = AddPlaylistForm()
         return render(request, "youtube/add-playlist.html", context={"form": form})
@@ -45,7 +45,7 @@ class AddPlaylistView(LoginRequiredMixin, View):
             )
 
 
-class DeletePlaylistView(LoginRequiredMixin, View):
+class Youtube_DeletePlaylistView(LoginRequiredMixin, View):
     def get(self, request):
         provider = Provider.objects.get(name="Youtube-Playlist")
         return render(
@@ -73,7 +73,7 @@ class DeletePlaylistView(LoginRequiredMixin, View):
         return render(request, "youtube/submit.html", context={"outmsg": outmsg}, status=status)
 
 
-class AddChannelView(LoginRequiredMixin, View):
+class Youtube_AddChannelView(LoginRequiredMixin, View):
     def get(self, request):
         form = AddChannelForm()
         return render(request, "youtube/add-channel.html", context={"form": form})
@@ -109,7 +109,7 @@ class AddChannelView(LoginRequiredMixin, View):
             )
 
 
-class DeleteChannelView(LoginRequiredMixin, View):
+class Youtube_DeleteChannelView(LoginRequiredMixin, View):
     def get(self, request):
         provider = Provider.objects.get(name="Youtube")
         return render(

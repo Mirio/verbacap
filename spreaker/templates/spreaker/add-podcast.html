@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}
+  VerbaCap - Add new Spreaker Podcast
+{% endblock title %}
+{% block content %}
+  <h1 class="text-center p-1">Add new Spreaker Podcast</h1>
+  <form method="post">
+    <div class="row">
+      <div class="col-12 col-md-8 offset-md-2 pb-3">
+        {% csrf_token %}
+        <div class="row text-center">
+          <div class="col-6 offset-3 mb-3">
+            {{ form.name.label }}
+            {{ form.name }}
+          </div>
+          <div class="col-8 offset-2 mb-3">
+            {{ form.podcast_url.label }}
+            {{ form.podcast_url }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <button value="submit"
+            type="submit"
+            class="btn btn-primary btn-lg d-grid mx-auto">Submit</button>
+  </form>
+{% endblock content %}
