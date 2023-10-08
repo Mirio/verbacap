@@ -9,14 +9,13 @@ env:
 
 on:
   push:
-    branches: ['develop']
+    branches: ["develop"]
+    tags:
+      - "v*"
 
   pull_request:
-    branches: ['main', 'develop']
-    paths-ignore: ['docs/**']
-
-  release:
-    types: ['published']
+    branches: ["main", "develop"]
+    paths-ignore: ["docs/**"]
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
