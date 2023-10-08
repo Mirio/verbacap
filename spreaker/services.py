@@ -1,4 +1,5 @@
 from os.path import exists
+from urllib.parse import urlparse
 
 import feedparser
 import requests
@@ -10,7 +11,8 @@ from core.shared import CommonResponse
 
 def get_rssurl(input_url: str) -> CommonResponse:
     out = CommonResponse()
-    if not input_url.startswith("https://www.spreaker.com/show/"):
+    inputurl_parsed = urlparse(input_url)
+    if not inputurl_parsed.path.startswith("/show") or inputurl_parsed.hostname != "www.spreaker.com":
         out.status = "error"
         out.message = "Not a spreaker url"
     else:
@@ -29,7 +31,8 @@ def get_rssurl(input_url: str) -> CommonResponse:
 def get_rss_data(input_url: str, limit: int = 10) -> CommonResponse:
     out = CommonResponse()
     counter = 0
-    if not input_url.startswith("https://www.spreaker.com/show/"):
+    inputurl_parsed = urlparse(input_url)
+    if not inputurl_parsed.path.startswith("/show") or inputurl_parsed.hostname != "www.spreaker.com":
         out.status = "error"
         out.message = "Not a spreaker url"
     else:
@@ -45,7 +48,8 @@ def get_rss_data(input_url: str, limit: int = 10) -> CommonResponse:
 
 def get_audio(input_url: str, fname: str) -> CommonResponse:
     out = CommonResponse()
-    if not input_url.startswith("https://dts.podtrac.com") and not input_url.startswith("https://api.spreaker.com"):
+    inputurl_parsed = urlparse(input_url)
+    if inputurl_parsed.hostname != "api.spreaker.com" and inputurl_parsed.hostname != "dts.podtrac.com":
         out.status = "error"
         out.message = "Not a spreaker url"
     else:
