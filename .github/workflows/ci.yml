@@ -8,12 +8,15 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 on:
+  push:
+    branches: ['develop']
+
   pull_request:
     branches: ['main', 'develop']
     paths-ignore: ['docs/**']
 
   release:
-    types: [published]
+    types: ['published']
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
