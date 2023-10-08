@@ -9,11 +9,11 @@ env:
 
 on:
   pull_request:
-    branches: ['main', 'develop']
+    branches: ['main', 'develop', 'release/*']
     paths-ignore: ['docs/**']
 
   push:
-    branches: ['develop']
+    branches: ['develop', 'release/*']
     paths-ignore: ['docs/**']
 
 concurrency:
