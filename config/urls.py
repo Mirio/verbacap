@@ -8,37 +8,68 @@ from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
 
-from core.views import AddDataSourceView, DeleteDataSourceView, EpisodeView, HomepageView, PlayerView
-from youtube.views import AddChannelView, AddPlaylistView, DeleteChannelView, DeletePlaylistView
+from core.views import (
+    Core_AddDataSourceView,
+    Core_DeleteDataSourceView,
+    Core_EpisodeView,
+    Core_HomepageView,
+    Core_PlayerView,
+)
+from spreaker.views import Spreaker_AddPodcastView, Spreaker_DeletePodcastView
+from youtube.views import (
+    Youtube_AddChannelView,
+    Youtube_AddPlaylistView,
+    Youtube_DeleteChannelView,
+    Youtube_DeletePlaylistView,
+)
 
 urlpatterns = [
     # Podcast
-    path("", cache_page(settings.CACHE_DEFAULT_TTL)(HomepageView.as_view()), name="homepage"),
-    path("player/", cache_page(settings.CACHE_DEFAULT_TTL)(PlayerView.as_view()), name="player"),
-    path("episode/", cache_page(settings.CACHE_SMART_TTL)(EpisodeView.as_view()), name="episode"),
+    path("", cache_page(settings.CACHE_DEFAULT_TTL)(Core_HomepageView.as_view()), name="homepage"),
+    path("player/", cache_page(settings.CACHE_DEFAULT_TTL)(Core_PlayerView.as_view()), name="player"),
+    path("episode/", cache_page(settings.CACHE_SMART_TTL)(Core_EpisodeView.as_view()), name="episode"),
     path(
-        "add-datasource/", cache_page(settings.CACHE_DEFAULT_TTL)(AddDataSourceView.as_view()), name="add-datasource"
+        "add-datasource/",
+        cache_page(settings.CACHE_DEFAULT_TTL)(Core_AddDataSourceView.as_view()),
+        name="add-datasource",
     ),
     path(
         "delete-datasource/",
-        cache_page(settings.CACHE_DEFAULT_TTL)(DeleteDataSourceView.as_view()),
+        cache_page(settings.CACHE_DEFAULT_TTL)(Core_DeleteDataSourceView.as_view()),
         name="delete-datasource",
     ),
     *static("persist/", document_root=settings.PERSIST_AUDIO_ROOTDIR),
     # Youtube Urls
-    path("yt/add-channel/", cache_page(settings.CACHE_DEFAULT_TTL)(AddChannelView.as_view()), name="yt-add-channel"),
+    path(
+        "yt/add-channel/",
+        cache_page(settings.CACHE_DEFAULT_TTL)(Youtube_AddChannelView.as_view()),
+        name="yt-add-channel",
+    ),
     path(
         "yt/delete-channel/",
-        cache_page(settings.CACHE_DEFAULT_TTL)(DeleteChannelView.as_view()),
+        Youtube_DeleteChannelView.as_view(),
         name="yt-delete-channel",
     ),
     path(
-        "yt/add-playlist/", cache_page(settings.CACHE_DEFAULT_TTL)(AddPlaylistView.as_view()), name="yt-add-playlist"
+        "yt/add-playlist/",
+        cache_page(settings.CACHE_DEFAULT_TTL)(Youtube_AddPlaylistView.as_view()),
+        name="yt-add-playlist",
     ),
     path(
         "yt/delete-playlist/",
-        cache_page(settings.CACHE_DEFAULT_TTL)(DeletePlaylistView.as_view()),
+        Youtube_DeletePlaylistView.as_view(),
         name="yt-delete-playlist",
+    ),
+    # Spreaker Urls
+    path(
+        "sk/add-podcast/",
+        cache_page(settings.CACHE_DEFAULT_TTL)(Spreaker_AddPodcastView.as_view()),
+        name="sk-add-podcast",
+    ),
+    path(
+        "sk/delete-podcast/",
+        Spreaker_DeletePodcastView.as_view(),
+        name="sk-delete-podcast",
     ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),

@@ -6,7 +6,7 @@ from core.models import DataSource, Episode, Playlist
 
 
 # Create your views here.
-class HomepageView(LoginRequiredMixin, View):
+class Core_HomepageView(LoginRequiredMixin, View):
     def get(self, request):
         episode = Episode.objects.all().order_by("-episode_date")
         playlist = Playlist.objects.all()
@@ -29,22 +29,22 @@ class HomepageView(LoginRequiredMixin, View):
         return render(request, "core/index.html", context=context)
 
 
-class PlayerView(LoginRequiredMixin, View):
+class Core_PlayerView(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, "core/player.html")
 
 
-class AddDataSourceView(LoginRequiredMixin, View):
+class Core_AddDataSourceView(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, "core/add_datasource.html")
 
 
-class DeleteDataSourceView(LoginRequiredMixin, View):
+class Core_DeleteDataSourceView(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, "core/delete_datasource.html")
 
 
-class EpisodeView(LoginRequiredMixin, View):
+class Core_EpisodeView(LoginRequiredMixin, View):
     def get(self, request):
         episode_extended = []
         playlist = Playlist.objects.all()

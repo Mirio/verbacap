@@ -20,8 +20,8 @@ With VerbaCap is a **Podcast Manager** you will be able to download and listen t
 It uses [_Django_](https://www.djangoproject.com/) in order to create a new integration for the platform as easy as possible. Below a quick platform integrated and the current status.
 
 :heavy_check_mark: Youtube Channel :heavy_check_mark: Youtube Playlist
-
-:construction: ITunes :construction: Amazon Music
+:construction: Spreaker.com
+:construction: Apple Podcast :construction: Amazon Music
 
 [Installation](docs/install.md) • [Configuration](docs/config.md)
 

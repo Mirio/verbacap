@@ -10,7 +10,7 @@ python_files = [
 
 # ==== Coverage ====
 [tool.coverage.run]
-include = ["verbacap/**", "core/**", "youtube/**"]
+include = ["verbacap/**", "core/**", "youtube/**", "spreaker/**"]
 omit = ["*/migrations/*", "*/tests/*", "*/example/*"]
 plugins = ["django_coverage_plugin"]
 relative_files = true
