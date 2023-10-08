@@ -1,5 +1,5 @@
 from os.path import exists
-from urllib.parse import parse_qs
+from urllib.parse import parse_qs, urlparse
 
 import feedparser
 import requests
@@ -13,7 +13,8 @@ from core.shared import CommonResponse
 
 def get_channel_rssurl(input_url: str) -> CommonResponse:
     out = CommonResponse()
-    if not input_url.startswith("https://www.youtube.com/"):
+    inputurl_parsed = urlparse(input_url)
+    if inputurl_parsed.hostname != "www.youtube.com":
         out.status = "error"
         out.message = "Not a youtube url"
     else:
@@ -32,7 +33,8 @@ def get_channel_rssurl(input_url: str) -> CommonResponse:
 
 def get_playlist_rssurl(input_url: str) -> CommonResponse:
     out = CommonResponse()
-    if not input_url.startswith("https://www.youtube.com/"):
+    inputurl_parsed = urlparse(input_url)
+    if inputurl_parsed.hostname != "www.youtube.com":
         out.status = "error"
         out.message = "Not a youtube url"
     elif "&list=" not in input_url:
@@ -47,9 +49,10 @@ def get_playlist_rssurl(input_url: str) -> CommonResponse:
 
 def get_rss_data(input_url: str, limit: int = 10) -> CommonResponse:
     out = CommonResponse()
+    inputurl_parsed = urlparse(input_url)
     counter = 0
     if input_url:
-        if not input_url.startswith("https://www.youtube.com/"):
+        if inputurl_parsed.hostname != "www.youtube.com":
             out.status = "error"
             out.message = "Not a youtube url"
         else:
@@ -68,7 +71,8 @@ def get_rss_data(input_url: str, limit: int = 10) -> CommonResponse:
 
 def get_audio(input_url: str, fname: str) -> CommonResponse:
     out = CommonResponse()
-    if not input_url.startswith("https://www.youtube.com/"):
+    inputurl_parsed = urlparse(input_url)
+    if inputurl_parsed.hostname != "www.youtube.com":
         out.status = "error"
         out.message = "Not a youtube url"
     else:
