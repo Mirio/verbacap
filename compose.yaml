@@ -16,8 +16,7 @@ services:
       - ./example/psql:/var/lib/postgresql/data
 
   web:
-    #build: .
-    image: ghcr.io/mirio/verbacap:develop
+    image: ghcr.io/mirio/verbacap:v1.0.0
     restart: always
     container_name: verbacap-web
     command: "run"
@@ -36,8 +35,7 @@ services:
       - ./example/web:/persist
 
   celery:
-    image: ghcr.io/mirio/verbacap:develop
-    #build: .
+    image: ghcr.io/mirio/verbacap:v1.0.0
     restart: always
     container_name: verbacap-celery
     command: "celery"

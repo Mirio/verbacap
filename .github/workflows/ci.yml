@@ -8,13 +8,14 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 on:
-  pull_request:
-    branches: ['main', 'develop', 'release/*']
-    paths-ignore: ['docs/**']
-
   push:
-    branches: ['develop', 'release/*']
-    paths-ignore: ['docs/**']
+    branches: ["develop"]
+    tags:
+      - "v*"
+
+  pull_request:
+    branches: ["main", "develop"]
+    paths-ignore: ["docs/**"]
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
@@ -95,7 +96,7 @@ jobs:
   dockerbuild:
     name: DockerBuild
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: startsWith(github.ref, 'refs/tags/v')
     needs: Pytest
     permissions:
       contents: read
