@@ -25,5 +25,42 @@ It uses [_Django_](https://www.djangoproject.com/) in order to create a new inte
 
 [Installation](docs/install.md) • [Configuration](docs/config.md)
 
-
 </div>
+
+## Quick Demo
+Below all the information to start a quick demo locally using Docker, for more stable solution please follow the [Installation](docs/install.md) guide.
+
+1. Install `docker` and `docker-compose` ([More Info](https://docs.docker.com/engine/install/))
+2. Run the command below to start the containers
+```
+docker compose up -d
+```
+3. Wait until the container is ready
+```
+docker logs -f verbacap-web
+```
+Wait until you can see `Listening at: http://0.0.0.0:8000`
+
+4. Create a superadmin user using:
+```
+docker exec -it verbacap-web /entrypoint.bash createadminuser
+```
+Insert the user and password of the superadmin
+
+5. Open your browser to [http://127.0.0.1:8080/](http://127.0.0.1:8080/)
+
+6. Login with the superadmin credential
+
+7. Go to Episode -> Add Datasource -> Add Youtube Channel and insert
+
+**Channel Name**: Youtube Official
+
+**Channel URL**: https://www.youtube.com/@youtube
+
+-> Submit
+
+8. Wait a few minute to scrape the page based by your internet connection
+
+9. Go to "Episode" Page -> Click on "Add to Playlist"
+
+10. Go to Player and listen it
