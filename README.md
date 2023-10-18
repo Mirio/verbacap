@@ -35,7 +35,7 @@ Below all the information to start a quick demo locally using Docker, for more s
 1. Install `docker` and `docker-compose` ([More Info](https://docs.docker.com/engine/install/))
 2. Run the command below to start the containers
 ```
-docker compose up -d
+docker compose -f compose-demo.yaml up -d
 ```
 3. Wait until the container is ready
 ```
