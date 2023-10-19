@@ -6,6 +6,15 @@ services:
     restart: always
     container_name: verbacap-redis
 
+  psql:
+    image: docker.io/postgres:15-alpine
+    restart: always
+    container_name: verbacap-psql
+    environment:
+      POSTGRES_PASSWORD: "changeme"
+    volumes:
+      - ./example/psql:/var/lib/postgresql/data
+
   web:
     image: ghcr.io/mirio/verbacap:v1.0.0
     restart: always
@@ -15,14 +24,15 @@ services:
       - 8080:8080
     depends_on:
       - redis
+      - psql
     environment:
-      DATABASE_URL: "postgres://POSTGRES_USERNAME:POSTGRES_PASSWORD@POSTGRES_HOSTNAME:5432/postgres"
-      DJANGO_SECRET_KEY: "CHANGEME_SECRET"
+      DATABASE_URL: "postgres://postgres:changeme@verbacap-psql:5432/postgres"
+      DJANGO_SECRET_KEY: "Chang4M4"
       DJANGO_DEBUG: "False"
       CELERY_BROKER_URL: "redis://verbacap-redis:6379/0"
       PERSIST_AUDIO_ROOTDIR: "/persist"
     volumes:
-      - CHANGEME_PERSIST_PATH:/persist
+      - ./example/web:/persist
 
   celery:
     image: ghcr.io/mirio/verbacap:v1.0.0
@@ -32,10 +42,10 @@ services:
     depends_on:
       - web
     environment:
-      DATABASE_URL: "postgres://POSTGRES_USERNAME:POSTGRES_PASSWORD@POSTGRES_HOSTNAME:5432/postgres"
-      DJANGO_SECRET_KEY: "CHANGEME_SECRET"
+      DATABASE_URL: "postgres://postgres:changeme@verbacap-psql:5432/postgres"
+      DJANGO_SECRET_KEY: "Chang4M4"
       DJANGO_DEBUG: "False"
       CELERY_BROKER_URL: "redis://verbacap-redis:6379/0"
       PERSIST_AUDIO_ROOTDIR: "/persist"
     volumes:
-      - CHANGEME_PERSIST_PATH:/persist
+      - ./example/web:/persist
