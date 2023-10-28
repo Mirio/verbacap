@@ -49,3 +49,11 @@ class Playlist(BaseModel):
 
     def __str__(self):
         return f"{self.episode.name}"
+
+
+class Settings(BaseModel):
+    name = models.CharField(help_text="Settings Name")
+    value = models.CharField(help_text="Value of the setting")
+
+    def __str__(self):
+        return f"{self.name}"

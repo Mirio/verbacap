@@ -7,7 +7,8 @@ from django.urls import resolve, reverse
 from django.utils import timezone
 from rest_framework.test import APIClient
 
-from core.models import DataSource, Episode, Playlist, Provider
+from core.models import DataSource, Episode, Playlist, Provider, Settings
+from core.tasks import calcolate_persistinfo
 
 
 # Create your tests here.
@@ -146,6 +147,34 @@ class Models_TestCase(TestCase):
         client.logout()
 
 
+class Tasks_TestCase(TestCase):
+    def setUp(self):
+        Provider.objects.create(name="Youtube", icon="aaaa", color="#fff")
+        provider = Provider.objects.get(name="Youtube")
+        DataSource.objects.create(
+            name="Youtube Official Channel",
+            provider=provider,
+            target="https://www.youtube.com/feeds/videos.xml?channel_id=UCBR8-60-B28hp2BmDPdntcQ",
+        )
+        datasource = DataSource.objects.get(name="Youtube Official Channel")
+        Episode.objects.create(
+            name="Introducing the shorter side of YouTube",
+            datasource=datasource,
+            episode_date=timezone.now(),
+            target="https://www.youtube.com/watch?v=__NeP0RqACU",
+        )
+        episode = Episode.objects.get(name="Introducing the shorter side of YouTube")
+        Playlist.objects.create(episode=episode, order_num=1)
+
+    def test_calcolate_persistinfo(self):
+        persist_info = calcolate_persistinfo()
+        self.assertEqual(persist_info, {"status": "success", "message": None, "value": None})
+        filesize_obj = Settings.objects.filter(name="persist_total_size").first()
+        self.assertTrue(isinstance(int(filesize_obj.value), int))
+        filecount_obj = Settings.objects.filter(name="persist_total_count").first()
+        self.assertTrue(isinstance(int(filecount_obj.value), int))
+
+
 class Views_TestCase(TestCase):
     def setUp(self):
         Provider.objects.create(name="Youtube", icon="aaaa", color="#fff")
@@ -190,4 +219,12 @@ class Views_TestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         client.login(username="testuser", password="1234")
         response_logged = client.get("/episode/")
+        self.assertEqual(response_logged.status_code, 200)
+
+    def test_settingsview(self):
+        client = Client()
+        response = client.get("/settings/")
+        self.assertEqual(response.status_code, 302)
+        client.login(username="testuser", password="1234")
+        response_logged = client.get("/settings/")
         self.assertEqual(response_logged.status_code, 200)

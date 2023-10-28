@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}
+  VerbaCap - Settings
+{% endblock title %}
+{% block content %}
+  <h1 class="text-center p-1">Settings</h1>
+  <p class="text-center">The page contains all the settings for the tool</p>
+  <div class="row">
+    <div class="col-6">
+      <div class="card bg-dark">
+        <div class="card-header text-center">Persist Audio Counter</div>
+        <div class="card-body">
+          <blockquote class="blockquote mb-0 text-center">
+            <p>Current number of files: {{ total_count.value }}</p>
+            <footer class="blockquote-footer text-end fs-6">
+              Last Update: {{ total_count.updated_at | date:"SHORT_DATETIME_FORMAT" }}
+            </footer>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="card bg-dark">
+        <div class="card-header text-center">Persist Audio File Size</div>
+        <div class="card-body">
+          <blockquote class="blockquote mb-0 text-center">
+            <p>Total Size: {{ total_size.value | filesizeformat }}</p>
+            <footer class="blockquote-footer text-end fs-6">
+              Last Update: {{ total_count.updated_at | date:"SHORT_DATETIME_FORMAT" }}
+            </footer>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
