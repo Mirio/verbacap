@@ -49,9 +49,6 @@ while ! nc -z "${DB_ADDR}" 5432; do
 done
 echo "Database Ready."
 
-# Chown Fix
-sudo chown -R "app:app" "${PERSIST_AUDIO_ROOTDIR}"
-
 # Load virtualenv
 cd "${HOME}" || exit
 # shellcheck disable=SC1091
@@ -87,7 +84,7 @@ case "${ACTION}" in
         echo "Starting App"
         prepare
         echo "--------"
-        sudo nginx
+        nginx
         gunicorn config.wsgi --bind 0.0.0.0:8000
         ;;
     shell)

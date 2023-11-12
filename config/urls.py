@@ -14,6 +14,7 @@ from core.views import (
     Core_EpisodeView,
     Core_HomepageView,
     Core_PlayerView,
+    Core_PlaylistView,
     Core_Settings,
 )
 from spreaker.views import Spreaker_AddPodcastView, Spreaker_DeletePodcastView
@@ -29,7 +30,8 @@ urlpatterns = [
     path("", cache_page(settings.CACHE_DEFAULT_TTL)(Core_HomepageView.as_view()), name="homepage"),
     path("player/", cache_page(settings.CACHE_DEFAULT_TTL)(Core_PlayerView.as_view()), name="player"),
     path("episode/", cache_page(settings.CACHE_SMART_TTL)(Core_EpisodeView.as_view()), name="episode"),
-    path("settings/", Core_Settings.as_view(), name="settings"),
+    path("settings/", cache_page(settings.CACHE_SMART_TTL)(Core_Settings.as_view()), name="settings"),
+    path("playlist/", Core_PlaylistView.as_view(), name="playlist"),
     path(
         "add-datasource/",
         cache_page(settings.CACHE_DEFAULT_TTL)(Core_AddDataSourceView.as_view()),

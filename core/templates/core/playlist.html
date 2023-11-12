@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}
+  VerbaCap - Playlist
+{% endblock title %}
+{% block additional_css %}
+{% endblock additional_css %}
+{% block inline_javascript %}
+  <script>
+    function remove_item(provider_shorname, episode_id) {
+      // Remove the css class ".selected-audio" from all elements
+      let element = document.querySelector("#" + provider_shorname + "_" + episode_id);
+      element.remove()
+    }
+
+    function episode_viewed(provider_shorname, episode_id) {
+      // Set episode to viewed after complited
+      let fullname = provider_shorname + "_" + episode_id;
+      let csrf_token = document.getElementById("csrfmiddlewaretoken");
+      const reqopt = {
+        method: "PUT",
+        body: JSON.stringify({}),
+        credentials: "same-origin",
+        headers: {
+          "X-CSRFToken": csrf_token.value
+        }
+      }
+      fetch("/api/episode/viewed/" + provider_shorname + "/" + episode_id + "/", reqopt)
+        .then(response => {
+          remove_item(provider_shorname, episode_id)
+        })
+        .catch(error => {
+          console.log(error);
+        })
+
+    }
+  </script>
+{% endblock inline_javascript %}
+{% block content %}
+  <h1 class="text-center p-1">Playlist</h1>
+  <input type="hidden" id="csrfmiddlewaretoken" value="{{ csrf_token }}" />
+  <div class="row">
+    <div class="col-10 offset-1">
+      {% for iter in playlist %}
+        <div id="{{ iter.episode.datasource.provider.shortname }}_{{ iter.episode.episode_id }}"
+             class="card bg-dark">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-1 text-center">
+                <a class="btn btn-danger"
+                   onclick='episode_viewed("{{ iter.episode.datasource.provider.shortname }}", "{{ iter.episode.episode_id }}")'><i class="fa-solid fa-trash"></i></a>
+              </div>
+              <div class="col-11">
+                <div class="text-white text-decoration-none">
+                  <span class="align-items-center">
+                    <i class="{{ iter.episode.datasource.provider.icon }}"
+                       style="color: {{ iter.episode.datasource.provider.color }}"></i>
+                    <span class="badge bg-success">{{ iter.episode.datasource.name }}</span> {{ iter.episode.name }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock content %}

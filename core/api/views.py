@@ -82,10 +82,21 @@ class PlaylistEditView(APIView):
 class EpisodeViewedSerializer(APIView):
     def put(self, request, provider_shortname, episode_id, format=None):
         out = CommonResponse()
+        episode_exists = False
         try:
             provider = Provider.objects.get(shortname=provider_shortname)
-            datasource = DataSource.objects.get(provider=provider)
-            episode = Episode.objects.get(datasource=datasource, episode_id=episode_id)
+            datasources = DataSource.objects.filter(provider=provider)
+            if not datasources:
+                raise DataSource.DoesNotExist
+            for datasource in datasources:
+                try:
+                    episode = Episode.objects.get(datasource=datasource, episode_id=episode_id)
+                    episode_exists = True
+                    break
+                except Episode.DoesNotExist:
+                    pass
+            if not episode_exists:
+                raise Episode.DoesNotExist
             playlist = Playlist.objects.get(episode=episode)
             if not episode.is_viewed:
                 episode.is_viewed = True

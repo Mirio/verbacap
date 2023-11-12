@@ -68,3 +68,9 @@ class Core_EpisodeView(LoginRequiredMixin, View):
                     episodeobj.is_playlist_present = True
             episode_extended.append(episodeobj)
         return render(request, "core/episode.html", context={"episodes": episode_extended})
+
+
+class Core_PlaylistView(LoginRequiredMixin, View):
+    def get(self, request):
+        playlist = Playlist.objects.all()
+        return render(request, "core/playlist.html", context={"playlist": playlist})
