@@ -5,6 +5,9 @@ on:
     tags:
       - "v*.*.*"
 
+permissions:
+  contents: write
+
 jobs:
   generate-changelog:
     name: Generate changelog
@@ -25,3 +28,8 @@ jobs:
           args: --verbose
         env:
           OUTPUT: CHANGELOG.md
+
+      - name: Push the changelog into release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: ${{ steps.git-cliff.outputs.content }}
