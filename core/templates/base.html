@@ -69,11 +69,14 @@
                 <a class="nav-link" href="{% url 'episode' %}"><i class="fa-solid fa-bars"></i> Episode</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link" href="{% url 'playlist' %}"><i class="fa-solid fa-receipt"></i> Playlist</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="{% url 'player' %}"><i class="fa-solid fa-circle-play"></i> Player</a>
               </li>
               <li class="nav-item">
                 {# URL provided by django-allauth/account/urls.py #}
-                <a class="nav-link" href="{% url 'account_logout' %}"><i class="fa-solid fa-right-from-bracket"></i> {% translate "Sign Out" %}</a>
+                <a class="nav-link" href="{% url 'account_logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
               </li>
             </ul>
           </div>

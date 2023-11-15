@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views import View
 
-from core.models import DataSource, Episode, Playlist
+from core.models import DataSource, Episode, Playlist, Settings
 
 
 # Create your views here.
@@ -44,6 +44,19 @@ class Core_DeleteDataSourceView(LoginRequiredMixin, View):
         return render(request, "core/delete_datasource.html")
 
 
+class Core_Settings(LoginRequiredMixin, View):
+    def get(self, request):
+        try:
+            total_size = Settings.objects.get(name="persist_total_size")
+        except Settings.DoesNotExist:
+            total_size = 0
+        try:
+            total_count = Settings.objects.get(name="persist_total_count")
+        except Settings.DoesNotExist:
+            total_count = 0
+        return render(request, "core/settings.html", context={"total_size": total_size, "total_count": total_count})
+
+
 class Core_EpisodeView(LoginRequiredMixin, View):
     def get(self, request):
         episode_extended = []
@@ -55,3 +68,9 @@ class Core_EpisodeView(LoginRequiredMixin, View):
                     episodeobj.is_playlist_present = True
             episode_extended.append(episodeobj)
         return render(request, "core/episode.html", context={"episodes": episode_extended})
+
+
+class Core_PlaylistView(LoginRequiredMixin, View):
+    def get(self, request):
+        playlist = Playlist.objects.all()
+        return render(request, "core/playlist.html", context={"playlist": playlist})

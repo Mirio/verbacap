@@ -93,7 +93,6 @@
       // Set episode to viewed after complited
       let current_player = videojs("podcast-player");
       let current_src = current_player.src().replace("/persist/", "");
-      console.log(current_src)
       let fullname = provider_shorname + "_" + episode_id;
       if (!globalThis.viewed.includes(fullname)) {
         globalThis.viewed.push(fullname);
