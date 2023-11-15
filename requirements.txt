@@ -5,7 +5,7 @@ argon2-cffi==23.1.0  # https://github.com/hynek/argon2_cffi
 whitenoise==6.6.0  # https://github.com/evansd/whitenoise
 redis==5.0.1  # https://github.com/redis/redis-py
 hiredis==2.2.3  # https://github.com/redis/hiredis-py
-celery==5.3.4  # pyup: < 6.0  # https://github.com/celery/celery
+celery==5.3.5  # pyup: < 6.0  # https://github.com/celery/celery
 django-celery-beat==2.5.0  # https://github.com/celery/django-celery-beat
 
 # Django
@@ -20,7 +20,7 @@ django-compressor==4.4  # https://github.com/django-compressor/django-compressor
 django-redis==5.4.0  # https://github.com/jazzband/django-redis
 # Django REST Framework
 djangorestframework==3.14.0  # https://github.com/encode/django-rest-framework
-django-cors-headers==4.3.0  # https://github.com/adamchainz/django-cors-headers
+django-cors-headers==4.3.1  # https://github.com/adamchainz/django-cors-headers
 # DRF-spectacular for api documentation
 drf-spectacular==0.26.5  # https://github.com/tfranzel/drf-spectacular
 Werkzeug[watchdog]==3.0.1 # https://github.com/pallets/werkzeug
@@ -59,6 +59,5 @@ pytest-django==4.7.0  # https://github.com/pytest-dev/pytest-django
 # ------------------------------------------------------------------------------
 feedparser==6.0.10  # https://github.com/kurtmckee/feedparser
 beautifulsoup4==4.12.2
-yt-dlp==2023.10.13 # https://github.com/yt-dlp/yt-dlp
+yt-dlp==2023.11.14 # https://github.com/yt-dlp/yt-dlp
 django-filter==23.3 # https://github.com/carltongibson/django-filter
-git-cliff==1.4.0 # https://github.com/orhun/git-cliff
