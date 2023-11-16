@@ -12,6 +12,7 @@ from core.views import (
     Core_AddDataSourceView,
     Core_DeleteDataSourceView,
     Core_EpisodeView,
+    Core_HealthView,
     Core_HomepageView,
     Core_PlayerView,
     Core_PlaylistView,
@@ -81,6 +82,7 @@ urlpatterns = [
     path("user-about/", TemplateView.as_view(template_name="pages/about.html"), name="about"),
     path("users/", include("verbacap.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
+    path("-/health/", Core_HealthView.as_view(), name="health_check"),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

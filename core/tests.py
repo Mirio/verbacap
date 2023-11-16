@@ -228,3 +228,8 @@ class Views_TestCase(TestCase):
         client.login(username="testuser", password="1234")
         response_logged = client.get("/settings/")
         self.assertEqual(response_logged.status_code, 200)
+
+    def test_healthcheckview(self):
+        client = Client()
+        response = client.get("/-/health/")
+        self.assertEqual(response.status_code, 200)
