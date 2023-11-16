@@ -1,10 +1,10 @@
 FROM alpine:3.18
 
 # Opencontainers Specs (https://github.com/opencontainers/image-spec/blob/main/annotations.md)
-LABEL org.opencontainers.image.title="VerbaCap"
-LABEL org.opencontainers.image.description="Podcast Manager"
-LABEL org.opencontainers.image.source="https://github.com/Mirio/verbacap"
-LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.title "VerbaCap"
+LABEL org.opencontainers.image.description "Podcast Manager"
+LABEL org.opencontainers.image.source "https://github.com/Mirio/verbacap"
+LABEL org.opencontainers.image.licenses "MIT"
 
 ARG USERNAME="app"
 ARG GITCLIFF_VERSION="1.4.0"

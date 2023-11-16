@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 
@@ -32,6 +33,12 @@ class Core_HomepageView(LoginRequiredMixin, View):
 class Core_PlayerView(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, "core/player.html")
+
+
+class Core_HealthView(View):
+    def get(self, request):
+        # TODO: Implement a more deeper health check
+        return HttpResponse("ok")
 
 
 class Core_AddDataSourceView(LoginRequiredMixin, View):
