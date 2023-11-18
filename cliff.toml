@@ -25,6 +25,7 @@ body = """
         - {% if commit.breaking %}[**breaking**] {% endif %}{{ commit.message | upper_first }}\
     {% endfor %}
 {% endfor %}\n
+Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)\n\n
 """
 # remove the leading and trailing whitespace from the template
 trim = true
