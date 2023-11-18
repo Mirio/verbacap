@@ -11,6 +11,8 @@ on:
     branches: [ "main", "develop"]
   push:
     branches: ["develop"]
+    paths-ignore:
+      - 'CHANGELOG.md'
     tags:
       - "v*"
 

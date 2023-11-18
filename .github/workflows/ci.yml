@@ -10,6 +10,8 @@ env:
 on:
   push:
     branches: ["develop"]
+    paths-ignore:
+      - 'CHANGELOG.md'
     tags:
       - "v*"
 
