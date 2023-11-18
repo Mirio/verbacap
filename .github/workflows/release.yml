@@ -35,12 +35,6 @@ jobs:
         with:
           body: ${{ steps.git-cliff.outputs.content }}
 
-      - name: Generate a full changelog
-        uses: orhun/git-cliff-action@v2
-        with:
-          config: cliff.toml
-          args: --verbose --output CHANGELOG.md
-
       - name: Push new changelog
         run: |
           git checkout develop
