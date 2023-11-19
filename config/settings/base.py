@@ -352,9 +352,7 @@ SPECTACULAR_SETTINGS = {
 # 24 Hours
 CACHE_DEFAULT_TTL = (60 * 60) * 24
 CACHE_SMART_TTL = 60 * 15
-CSRF_TRUSTED_ORIGINS = [
-    "http://127.0.0.1:8080",
-    "http://127.0.0.1:8000",
-    "http://localhost:8080",
-    "http://localhost:8000",
-]
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS",
+    default=["http://127.0.0.1:8080", "http://127.0.0.1:8000", "http://localhost:8080", "http://localhost:8000"],
+)
