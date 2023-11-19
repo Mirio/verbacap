@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.9] - 2023-11-19
+
+### Bug Fixes
+
+- Export CSRF_TRUSTED_ORIGINS venv
+
+
+Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)
+
 ## [1.2.8] - 2023-11-19
 
 ### Bug Fixes
