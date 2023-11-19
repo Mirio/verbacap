@@ -33,10 +33,17 @@ jobs:
         with:
           body: ${{ steps.git-cliff.outputs.content }}
 
+      - name: Generate a latest changelog
+        uses: orhun/git-cliff-action@v2
+        id: git-cliff-full
+        with:
+          config: cliff.toml
+          args: --verbose
+
       - name: Push new changelog
         run: |
           git checkout develop
-          echo '${{ steps.git-cliff.outputs.content }}' > CHANGELOG.md
+          echo '${{ steps.git-cliff-full.outputs.content }}' > CHANGELOG.md
           git config --global user.name "Mirio"
           git config --global user.email "1211529+Mirio@users.noreply.github.com"
           git add CHANGELOG.md
