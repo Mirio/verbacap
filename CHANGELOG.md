@@ -2,11 +2,116 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.7] - 2023-11-19
+
+### Miscellaneous Tasks
+
+- Fix changelog generator
+
+
+Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)
+
 ## [1.2.6] - 2023-11-18
 
 ### Miscellaneous Tasks
 
 - Fix changelog generator
+
+
+Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)
+
+## [1.2.5] - 2023-11-18
+
+### Miscellaneous Tasks
+
+- Adding dockerinfo on GH
+
+
+Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)
+
+## [1.2.4] - 2023-11-18
+
+### Miscellaneous Tasks
+
+- Adding path ignore + Add changelog on develop
+
+
+Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)
+
+## [1.2.3] - 2023-11-18
+
+### Miscellaneous Tasks
+
+- Fix commit msg / user
+
+
+Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)
+
+## [1.2.2] - 2023-11-18
+
+### Miscellaneous Tasks
+
+- Fix docker platform + remove typ
+
+
+Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)
+
+## [1.2.1] - 2023-11-18
+
+### Miscellaneous Tasks
+
+- Add docker labels + Fix docker security issues + Add full changelog
+
+
+Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)
+
+## [1.2.0] - 2023-11-16
+
+### Features
+
+- Adding simple health check page
+
+### Miscellaneous Tasks
+
+- Adding OpenContainers Labels to dockerfile
+- Upgrade yt-dlp deps
+- Adding dependabot settings for standard commit msg
+
+
+Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)
+
+## [1.1.2] - 2023-11-15
+
+### Miscellaneous Tasks
+
+- Limit changelog generation only for tags
+- Fix dockerfile reference for git-cliff
+
+### Refactor
+
+- Update Celery,django-cors-headers,yt-dlp
+
+
+Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)
+
+## [1.1.1] - 2023-11-15
+
+### Miscellaneous Tasks
+
+- Adding changelog in the release page
+
+
+Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)
+
+## [1.1.0] - 2023-11-15
+
+### Features
+
+- Adding Playlist page + Switch Dockerfile to userspace
+
+### Miscellaneous Tasks
+
+- Adding Git-cliff integration
 
 
 Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)
