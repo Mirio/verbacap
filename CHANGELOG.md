@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2023-11-20
+
+### Bug Fixes
+
+- Fix static player img
+- Adding user auth filter on navbar + Adjust login page
+- Restyle playlist list on player page
+
+### Documentation
+
+- Adding docs about helm + Adding new venv
+
+### Features
+
+- Rework the cache layer for the pages
+
+### Miscellaneous Tasks
+
+- Bump psycopg[binary] from 3.1.12 to 3.1.13
+
+
+Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)
+
 ## [1.2.9] - 2023-11-19
 
 ### Bug Fixes
