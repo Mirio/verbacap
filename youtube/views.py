@@ -1,7 +1,10 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import cache_page
 
 from core.models import DataSource, Provider
 from youtube.forms import AddChannelForm, AddPlaylistForm
@@ -9,7 +12,8 @@ from youtube.tasks import import_episodes_yt_channels, import_episodes_yt_playli
 
 
 # Create your views here.
-class Youtube_AddPlaylistView(LoginRequiredMixin, View):
+@method_decorator([login_required, cache_page(settings.CACHE_DEFAULT_TTL)], name="dispatch")
+class Youtube_AddPlaylistView(View):
     def get(self, request):
         form = AddPlaylistForm()
         return render(request, "youtube/add-playlist.html", context={"form": form})
@@ -45,7 +49,8 @@ class Youtube_AddPlaylistView(LoginRequiredMixin, View):
             )
 
 
-class Youtube_DeletePlaylistView(LoginRequiredMixin, View):
+@method_decorator([login_required, cache_page(settings.CACHE_DEFAULT_TTL)], name="dispatch")
+class Youtube_DeletePlaylistView(View):
     def get(self, request):
         provider = Provider.objects.get(name="Youtube-Playlist")
         return render(
@@ -73,7 +78,8 @@ class Youtube_DeletePlaylistView(LoginRequiredMixin, View):
         return render(request, "youtube/submit.html", context={"outmsg": outmsg}, status=status)
 
 
-class Youtube_AddChannelView(LoginRequiredMixin, View):
+@method_decorator([login_required, cache_page(settings.CACHE_DEFAULT_TTL)], name="dispatch")
+class Youtube_AddChannelView(View):
     def get(self, request):
         form = AddChannelForm()
         return render(request, "youtube/add-channel.html", context={"form": form})
@@ -109,7 +115,8 @@ class Youtube_AddChannelView(LoginRequiredMixin, View):
             )
 
 
-class Youtube_DeleteChannelView(LoginRequiredMixin, View):
+@method_decorator([login_required, cache_page(settings.CACHE_DEFAULT_TTL)], name="dispatch")
+class Youtube_DeleteChannelView(View):
     def get(self, request):
         provider = Provider.objects.get(name="Youtube")
         return render(

@@ -3,7 +3,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
-from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
@@ -28,26 +27,26 @@ from youtube.views import (
 
 urlpatterns = [
     # Podcast
-    path("", cache_page(settings.CACHE_DEFAULT_TTL)(Core_HomepageView.as_view()), name="homepage"),
-    path("player/", cache_page(settings.CACHE_DEFAULT_TTL)(Core_PlayerView.as_view()), name="player"),
-    path("episode/", cache_page(settings.CACHE_SMART_TTL)(Core_EpisodeView.as_view()), name="episode"),
-    path("settings/", cache_page(settings.CACHE_SMART_TTL)(Core_Settings.as_view()), name="settings"),
+    path("", Core_HomepageView.as_view(), name="homepage"),
+    path("player/", Core_PlayerView.as_view(), name="player"),
+    path("episode/", Core_EpisodeView.as_view(), name="episode"),
+    path("settings/", Core_Settings.as_view(), name="settings"),
     path("playlist/", Core_PlaylistView.as_view(), name="playlist"),
     path(
         "add-datasource/",
-        cache_page(settings.CACHE_DEFAULT_TTL)(Core_AddDataSourceView.as_view()),
+        Core_AddDataSourceView.as_view(),
         name="add-datasource",
     ),
     path(
         "delete-datasource/",
-        cache_page(settings.CACHE_DEFAULT_TTL)(Core_DeleteDataSourceView.as_view()),
+        Core_DeleteDataSourceView.as_view(),
         name="delete-datasource",
     ),
     *static("persist/", document_root=settings.PERSIST_AUDIO_ROOTDIR),
     # Youtube Urls
     path(
         "yt/add-channel/",
-        cache_page(settings.CACHE_DEFAULT_TTL)(Youtube_AddChannelView.as_view()),
+        Youtube_AddChannelView.as_view(),
         name="yt-add-channel",
     ),
     path(
@@ -57,7 +56,7 @@ urlpatterns = [
     ),
     path(
         "yt/add-playlist/",
-        cache_page(settings.CACHE_DEFAULT_TTL)(Youtube_AddPlaylistView.as_view()),
+        Youtube_AddPlaylistView.as_view(),
         name="yt-add-playlist",
     ),
     path(
@@ -68,7 +67,7 @@ urlpatterns = [
     # Spreaker Urls
     path(
         "sk/add-podcast/",
-        cache_page(settings.CACHE_DEFAULT_TTL)(Spreaker_AddPodcastView.as_view()),
+        Spreaker_AddPodcastView.as_view(),
         name="sk-add-podcast",
     ),
     path(

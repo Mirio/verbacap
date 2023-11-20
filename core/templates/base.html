@@ -65,19 +65,21 @@
               <li class="nav-item active">
                 <a class="nav-link" href="{% url 'homepage' %}"><i class="fa-solid fa-house"></i> Home <span class="visually-hidden">(current)</span></a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'episode' %}"><i class="fa-solid fa-bars"></i> Episode</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'playlist' %}"><i class="fa-solid fa-receipt"></i> Playlist</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'player' %}"><i class="fa-solid fa-circle-play"></i> Player</a>
-              </li>
-              <li class="nav-item">
-                {# URL provided by django-allauth/account/urls.py #}
-                <a class="nav-link" href="{% url 'account_logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
-              </li>
+              {% if user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'episode' %}"><i class="fa-solid fa-bars"></i> Episode</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'playlist' %}"><i class="fa-solid fa-receipt"></i> Playlist</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'player' %}"><i class="fa-solid fa-circle-play"></i> Player</a>
+                </li>
+                <li class="nav-item">
+                  {# URL provided by django-allauth/account/urls.py #}
+                  <a class="nav-link" href="{% url 'account_logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+                </li>
+              {% endif %}
             </ul>
           </div>
         </div>

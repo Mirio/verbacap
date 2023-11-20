@@ -9,3 +9,5 @@
 | PERSIST_AUDIO_ROOTDIR | /persist/audio | /persist/audio | Persist Path to store the audio files |
 | DJANGO_ACCOUNT_ALLOW_REGISTRATION | False | False | A boolean that turns on/off the user registration. |
 | DJANGO_ALLOWED_HOSTS | example.com | example.com | Django Allowed Hosts separated by comma |
+| DEBUG_INTERNALIPS | 127.0.0.1 | 127.0.0.1,192.168.1.1 | If Debug is enabled, you can add your ip below to show the debug toolbar |
+| CSRF_TRUSTED_ORIGINS | localhost,0.0.0.0,127.0.0.1 | 127.0.0.1 | CSRF_TRUSTED_ORIGINS exposed separated by comma |

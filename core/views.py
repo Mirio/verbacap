@@ -1,13 +1,17 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import cache_page
 
 from core.models import DataSource, Episode, Playlist, Settings
 
 
 # Create your views here.
-class Core_HomepageView(LoginRequiredMixin, View):
+@method_decorator([login_required, cache_page(settings.CACHE_DEFAULT_TTL)], name="dispatch")
+class Core_HomepageView(View):
     def get(self, request):
         episode = Episode.objects.all().order_by("-episode_date")
         playlist = Playlist.objects.all()
@@ -30,7 +34,8 @@ class Core_HomepageView(LoginRequiredMixin, View):
         return render(request, "core/index.html", context=context)
 
 
-class Core_PlayerView(LoginRequiredMixin, View):
+@method_decorator([login_required, cache_page(settings.CACHE_DEFAULT_TTL)], name="dispatch")
+class Core_PlayerView(View):
     def get(self, request):
         return render(request, "core/player.html")
 
@@ -41,17 +46,20 @@ class Core_HealthView(View):
         return HttpResponse("ok")
 
 
-class Core_AddDataSourceView(LoginRequiredMixin, View):
+@method_decorator([login_required, cache_page(settings.CACHE_DEFAULT_TTL)], name="dispatch")
+class Core_AddDataSourceView(View):
     def get(self, request):
         return render(request, "core/add_datasource.html")
 
 
-class Core_DeleteDataSourceView(LoginRequiredMixin, View):
+@method_decorator([login_required, cache_page(settings.CACHE_DEFAULT_TTL)], name="dispatch")
+class Core_DeleteDataSourceView(View):
     def get(self, request):
         return render(request, "core/delete_datasource.html")
 
 
-class Core_Settings(LoginRequiredMixin, View):
+@method_decorator([login_required, cache_page(settings.CACHE_DEFAULT_TTL)], name="dispatch")
+class Core_Settings(View):
     def get(self, request):
         try:
             total_size = Settings.objects.get(name="persist_total_size")
@@ -64,7 +72,8 @@ class Core_Settings(LoginRequiredMixin, View):
         return render(request, "core/settings.html", context={"total_size": total_size, "total_count": total_count})
 
 
-class Core_EpisodeView(LoginRequiredMixin, View):
+@method_decorator([login_required, cache_page(settings.CACHE_SMART_TTL)], name="dispatch")
+class Core_EpisodeView(View):
     def get(self, request):
         episode_extended = []
         playlist = Playlist.objects.all()
@@ -77,7 +86,8 @@ class Core_EpisodeView(LoginRequiredMixin, View):
         return render(request, "core/episode.html", context={"episodes": episode_extended})
 
 
-class Core_PlaylistView(LoginRequiredMixin, View):
+@method_decorator([login_required, cache_page(settings.CACHE_SMART_TTL)], name="dispatch")
+class Core_PlaylistView(View):
     def get(self, request):
         playlist = Playlist.objects.all()
         return render(request, "core/playlist.html", context={"playlist": playlist})

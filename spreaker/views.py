@@ -1,7 +1,10 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import cache_page
 
 from core.models import DataSource, Provider
 from spreaker.forms import AddPodcastForm
@@ -9,7 +12,8 @@ from spreaker.tasks import import_episodes_sk
 
 
 # Create your views here.
-class Spreaker_AddPodcastView(LoginRequiredMixin, View):
+@method_decorator([login_required, cache_page(settings.CACHE_DEFAULT_TTL)], name="dispatch")
+class Spreaker_AddPodcastView(View):
     def get(self, request):
         form = AddPodcastForm()
         return render(request, "spreaker/add-podcast.html", context={"form": form})
@@ -45,7 +49,8 @@ class Spreaker_AddPodcastView(LoginRequiredMixin, View):
             )
 
 
-class Spreaker_DeletePodcastView(LoginRequiredMixin, View):
+@method_decorator([login_required, cache_page(settings.CACHE_DEFAULT_TTL)], name="dispatch")
+class Spreaker_DeletePodcastView(View):
     def get(self, request):
         provider = Provider.objects.get(name="Spreaker")
         return render(
