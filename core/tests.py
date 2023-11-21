@@ -94,6 +94,11 @@ class ApiUrl_Test(TestCase):
         self.assertEqual(response.json(), {"status": "error", "message": "Datasource not found.", "value": None})
         response = client.put("/api/episode/viewed/yt/thA_T13Wnqo/", {})
         self.assertEqual(response.json(), {"message": None, "status": "success", "value": None})
+        # Tasks / Actions
+        response = client.delete("/api/action/deleteappcache/", {})
+        self.assertEqual(response.json(), {"success": None})
+        response = client.put("/api/task/corecalcolatepersistinfo", {})
+        self.assertEqual(response.json(), {"success": True})
 
 
 class Models_TestCase(TestCase):
@@ -219,6 +224,14 @@ class Views_TestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         client.login(username="testuser", password="1234")
         response_logged = client.get("/episode/")
+        self.assertEqual(response_logged.status_code, 200)
+
+    def test_playlistview(self):
+        client = Client()
+        response = client.get("/playlist/")
+        self.assertEqual(response.status_code, 302)
+        client.login(username="testuser", password="1234")
+        response_logged = client.get("/playlist/")
         self.assertEqual(response_logged.status_code, 200)
 
     def test_settingsview(self):

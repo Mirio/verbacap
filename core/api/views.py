@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.db.models import Max
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.mixins import ListModelMixin
@@ -9,6 +10,21 @@ from core.api.serializers import EpisodeSerializer, PlaylistSerializer
 from core.models import DataSource, Episode, Playlist, Provider
 from core.services import download_episode
 from core.shared import CommonResponse
+from core.tasks import calcolate_persistinfo
+
+
+class Action_AppCacheCleanupView(APIView):
+    def delete(self, request, format=None):
+        return Response({"success": cache.clear()})
+
+
+class Task_CoreCalcolatePersistInfo(APIView):
+    def put(self, request, format=None):
+        obj = calcolate_persistinfo()
+        out = False
+        if obj["status"] == "success":
+            out = True
+        return Response({"success": out})
 
 
 class PlaylistView(APIView):

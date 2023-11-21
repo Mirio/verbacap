@@ -3,11 +3,47 @@
 {% block title %}
   VerbaCap - Settings
 {% endblock title %}
+{% block inline_javascript %}
+  <script>
+    function task_RunCoreCalcolatePersistinfo() {
+      let csrf_token = document.getElementById("csrfmiddlewaretoken");
+      const reqopt = {
+        method: "PUT",
+        body: JSON.stringify({}),
+        credentials: "same-origin",
+        headers: {
+          "X-CSRFToken": csrf_token.value
+        }
+      }
+      fetch("/api/task/corecalcolatepersistinfo", reqopt)
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
+    function action_ActionAppCacheDelete() {
+      let csrf_token = document.getElementById("csrfmiddlewaretoken");
+      const reqopt = {
+        method: "DELETE",
+        body: JSON.stringify({}),
+        credentials: "same-origin",
+        headers: {
+          "X-CSRFToken": csrf_token.value
+        }
+      }
+      fetch("/api/action/deleteappcache/", reqopt)
+        .catch(error => {
+          console.log(error);
+        })
+    }
+  </script>
+{% endblock inline_javascript %}
 {% block content %}
   <h1 class="text-center p-1">Settings</h1>
   <p class="text-center">The page contains all the settings for the tool</p>
+  <input type="hidden" id="csrfmiddlewaretoken" value="{{ csrf_token }}" />
   <div class="row">
-    <div class="col-6">
+    <div class="col-12 col-md-6">
       <div class="card bg-dark">
         <div class="card-header text-center">Persist Audio Counter</div>
         <div class="card-body">
@@ -20,7 +56,7 @@
         </div>
       </div>
     </div>
-    <div class="col-6">
+    <div class="col-12 col-md-6 pt-3 pt-md-0">
       <div class="card bg-dark">
         <div class="card-header text-center">Persist Audio File Size</div>
         <div class="card-body">
@@ -30,6 +66,36 @@
               Last Update: {{ total_count.updated_at | date:"SHORT_DATETIME_FORMAT" }}
             </footer>
           </blockquote>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row pt-3">
+    <div class="col-12 col-md-6">
+      <div class="card bg-dark">
+        <div class="card-header text-center">Run Tasks</div>
+        <div class="card-body">
+          <div class="row">
+            <div class="offset-2 col-8 d-grid">
+              <button type="button"
+                      onclick="task_RunCoreCalcolatePersistinfo()"
+                      class="btn btn-primary">Run Core Calcolate PersistInfo</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 pt-3 pt-md-0">
+      <div class="card bg-dark">
+        <div class="card-header text-center">Run Actions</div>
+        <div class="card-body">
+          <div class="row">
+            <div class="offset-2 col-8 d-grid">
+              <button type="button"
+                      onclick="action_ActionAppCacheDelete()"
+                      class="btn btn-success">Cleanup App Cache</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
