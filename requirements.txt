@@ -49,7 +49,6 @@ pre-commit==3.5.0  # https://github.com/pre-commit/pre-commit
 # ------------------------------------------------------------------------------
 factory-boy==3.3.0  # https://github.com/FactoryBoy/factory_boy
 gunicorn==21.2.0  # https://github.com/benoitc/gunicorn
-
 django-debug-toolbar==4.2.0  # https://github.com/jazzband/django-debug-toolbar
 django-extensions==3.2.3  # https://github.com/django-extensions/django-extensions
 django-coverage-plugin==3.1.0  # https://github.com/nedbat/django_coverage_plugin
@@ -60,4 +59,4 @@ pytest-django==4.7.0  # https://github.com/pytest-dev/pytest-django
 feedparser==6.0.10  # https://github.com/kurtmckee/feedparser
 beautifulsoup4==4.12.2
 yt-dlp==2023.11.16 # https://github.com/yt-dlp/yt-dlp
-django-filter==23.3 # https://github.com/carltongibson/django-filter
+django-filter==23.4 # https://github.com/carltongibson/django-filter
