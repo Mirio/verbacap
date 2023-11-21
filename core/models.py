@@ -52,7 +52,7 @@ class Playlist(BaseModel):
 
 
 class Settings(BaseModel):
-    name = models.CharField(help_text="Settings Name")
+    name = models.CharField(help_text="Settings Name", unique=True)
     value = models.CharField(help_text="Value of the setting")
 
     def __str__(self):
