@@ -6,6 +6,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/manage.py",
+            "envFile": "${workspaceFolder}/develop.env",
             "args": [
                 "shell"
             ],
@@ -17,6 +18,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/manage.py",
+            "envFile": "${workspaceFolder}/develop.env",
             "args": [
                 "runserver"
             ],

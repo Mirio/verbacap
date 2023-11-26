@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
-from core.api.serializers import EpisodeSerializer, PlaylistSerializer
+from core.api.serializers import CommonSuccessSerializer, EpisodeSerializer, PlaylistSerializer
 from core.models import DataSource, Episode, Playlist, Provider
 from core.services import download_episode
 from core.shared import CommonResponse
@@ -14,20 +14,28 @@ from core.tasks import calcolate_persistinfo
 
 
 class Action_AppCacheCleanupView(APIView):
+    serializer_class = None
+
     def delete(self, request, format=None):
-        return Response({"success": cache.clear()})
+        serializer = CommonSuccessSerializer({"success": bool(cache.clear())})
+        return Response(serializer.data)
 
 
-class Task_CoreCalcolatePersistInfo(APIView):
+class Task_CoreCalcolatePersistInfoView(APIView):
+    serializer_class = None
+
     def put(self, request, format=None):
         obj = calcolate_persistinfo()
         out = False
         if obj["status"] == "success":
             out = True
-        return Response({"success": out})
+        serializer = CommonSuccessSerializer({"success": out})
+        return Response(serializer.data)
 
 
 class PlaylistView(APIView):
+    serializer_class = PlaylistSerializer
+
     def get(self, request, format=None):
         playlist = []
         for iter in Playlist.objects.all().order_by("order_num"):
@@ -38,6 +46,8 @@ class PlaylistView(APIView):
 
 
 class PlaylistEditView(APIView):
+    serializer_class = None
+
     def delete(self, request, provider_shortname, episode_id, format=None):
         out = CommonResponse()
         try:
@@ -95,7 +105,9 @@ class PlaylistEditView(APIView):
         return Response(out.__dict__)
 
 
-class EpisodeViewedSerializer(APIView):
+class EpisodeViewedView(APIView):
+    serializer_class = None
+
     def put(self, request, provider_shortname, episode_id, format=None):
         out = CommonResponse()
         episode_exists = False

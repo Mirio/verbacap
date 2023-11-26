@@ -5,7 +5,7 @@
 {% endblock title %}
 {% block inline_javascript %}
   <script>
-    function task_RunCoreCalcolatePersistinfo() {
+    function task_Core_CalcolatePersistInfo() {
       let csrf_token = document.getElementById("csrfmiddlewaretoken");
       const reqopt = {
         method: "PUT",
@@ -15,13 +15,61 @@
           "X-CSRFToken": csrf_token.value
         }
       }
-      fetch("/api/task/corecalcolatepersistinfo", reqopt)
+      fetch("/api/task/core-calcolatepersistinfo/", reqopt)
         .catch(error => {
           console.log(error);
         })
     }
 
-    function action_ActionAppCacheDelete() {
+    function task_YT_ImportEpisodesYTChannel() {
+      let csrf_token = document.getElementById("csrfmiddlewaretoken");
+      const reqopt = {
+        method: "PUT",
+        body: JSON.stringify({}),
+        credentials: "same-origin",
+        headers: {
+          "X-CSRFToken": csrf_token.value
+        }
+      }
+      fetch("/api/task/yt-importepisodeschannel/", reqopt)
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
+    function task_YT_ImportEpisodesYTPlaylist() {
+      let csrf_token = document.getElementById("csrfmiddlewaretoken");
+      const reqopt = {
+        method: "PUT",
+        body: JSON.stringify({}),
+        credentials: "same-origin",
+        headers: {
+          "X-CSRFToken": csrf_token.value
+        }
+      }
+      fetch("/api/task/yt-importepisodesplaylist/", reqopt)
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
+    function task_SK_ImportEpisodesSK() {
+      let csrf_token = document.getElementById("csrfmiddlewaretoken");
+      const reqopt = {
+        method: "PUT",
+        body: JSON.stringify({}),
+        credentials: "same-origin",
+        headers: {
+          "X-CSRFToken": csrf_token.value
+        }
+      }
+      fetch("/api/task/sk-importepisodes/", reqopt)
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
+    function action_AppCacheDelete() {
       let csrf_token = document.getElementById("csrfmiddlewaretoken");
       const reqopt = {
         method: "DELETE",
@@ -31,7 +79,7 @@
           "X-CSRFToken": csrf_token.value
         }
       }
-      fetch("/api/action/deleteappcache/", reqopt)
+      fetch("/api/action/core-deleteappcache/", reqopt)
         .catch(error => {
           console.log(error);
         })
@@ -78,8 +126,23 @@
           <div class="row">
             <div class="offset-2 col-8 d-grid">
               <button type="button"
-                      onclick="task_RunCoreCalcolatePersistinfo()"
+                      onclick="task_Core_CalcolatePersistInfo()"
                       class="btn btn-primary">Run Core Calcolate PersistInfo</button>
+            </div>
+            <div class="offset-2 col-8 d-grid pt-3">
+              <button type="button"
+                      onclick="task_YT_ImportEpisodesYTChannel()"
+                      class="btn btn-primary">Run Import Episodes Youtube Channel</button>
+            </div>
+            <div class="offset-2 col-8 d-grid pt-3">
+              <button type="button"
+                      onclick="task_YT_ImportEpisodesYTPlaylist()"
+                      class="btn btn-primary">Run Import Episodes Youtube Playlist</button>
+            </div>
+            <div class="offset-2 col-8 d-grid pt-3">
+              <button type="button"
+                      onclick="task_SK_ImportEpisodesSK()"
+                      class="btn btn-primary">Run Import Episodes Spreaker</button>
             </div>
           </div>
         </div>
@@ -92,7 +155,7 @@
           <div class="row">
             <div class="offset-2 col-8 d-grid">
               <button type="button"
-                      onclick="action_ActionAppCacheDelete()"
+                      onclick="action_AppCacheDelete()"
                       class="btn btn-success">Cleanup App Cache</button>
             </div>
           </div>

@@ -42,12 +42,16 @@ def import_episodes_sk() -> CommonResponse:
                     id = feed["id"].split("/")[-1]
                     check_episode = Episode.objects.filter(episode_id=id, datasource=datasource_obj)
                     if not check_episode:
+                        try:
+                            target_link = feed["links"][1]["href"]
+                        except IndexError:
+                            target_link = feed["links"][0]["href"]
                         Episode.objects.create(
                             episode_id=id,
                             name=feed["title"],
                             datasource=datasource_obj,
                             episode_date=datetime.fromtimestamp(mktime(feed["published_parsed"])),
-                            target=feed["links"][1]["href"],
+                            target=target_link,
                         )
                         cache.clear()
                 out.message = "done"

@@ -51,8 +51,20 @@ class ApiUrl_Test(TestCase):
         user.save()
 
     def test_urls(self):
-        self.assertEqual(reverse("api:playlist"), "/api/playlist/")
-        self.assertEqual(resolve("/api/playlist/").view_name, "api:playlist")
+        self.assertEqual(reverse("api:api-playlist"), "/api/playlist/")
+        self.assertEqual(resolve("/api/playlist/").view_name, "api:api-playlist")
+
+    def test_actions(self):
+        client = APIClient()
+        client.login(username="testuser", password="1234", headers={"Content-Type": "application/json"})
+        response = client.delete(reverse("api:api-action-appcachecleanup"))
+        self.assertEqual(response.json(), {"success": False})
+
+    def test_tasks(self):
+        client = APIClient()
+        client.login(username="testuser", password="1234", headers={"Content-Type": "application/json"})
+        response = client.put(reverse("api:api-task-corecalcolatepersistinfo"))
+        self.assertEqual(response.json(), {"success": True})
 
     def test_view(self):
         client = APIClient()
@@ -94,11 +106,6 @@ class ApiUrl_Test(TestCase):
         self.assertEqual(response.json(), {"status": "error", "message": "Datasource not found.", "value": None})
         response = client.put("/api/episode/viewed/yt/thA_T13Wnqo/", {})
         self.assertEqual(response.json(), {"message": None, "status": "success", "value": None})
-        # Tasks / Actions
-        response = client.delete("/api/action/deleteappcache/", {})
-        self.assertEqual(response.json(), {"success": None})
-        response = client.put("/api/task/corecalcolatepersistinfo", {})
-        self.assertEqual(response.json(), {"success": True})
 
 
 class Models_TestCase(TestCase):
