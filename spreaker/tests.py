@@ -3,7 +3,9 @@ from os.path import exists
 
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils import timezone
+from rest_framework.test import APIClient
 
 from core.models import DataSource, Episode, Playlist, Provider
 from spreaker.services import get_audio, get_rss_data, get_rssurl
@@ -128,3 +130,42 @@ class Views_TestCase(TestCase):
         self.assertEqual(obj, {"message": "Downloaded.", "status": "success", "value": None})
         obj_noexist = download_episode_sk(episode_id="xyz")
         self.assertEqual(obj_noexist, {"message": "Episode ID not found", "status": "error", "value": None})
+
+
+class ApiUrl_Test(TestCase):
+    def setUp(self):
+        Provider.objects.create(name="Youtube", icon="aaaa", color="#fff", shortname="yt")
+        provider = Provider.objects.get(name="Youtube")
+        Provider.objects.create(name="Youtube-Custom", icon="aaaa", color="#fff", shortname="ytc")
+        DataSource.objects.create(
+            name="Youtube Official Channel",
+            provider=provider,
+            target="https://www.youtube.com/feeds/videos.xml?channel_id=UCBR8-60-B28hp2BmDPdntcQ",
+        )
+        datasource = DataSource.objects.get(name="Youtube Official Channel")
+        Episode.objects.create(
+            name="Introducing the shorter side of YouTube",
+            datasource=datasource,
+            episode_date=timezone.now(),
+            episode_id="__NeP0RqACU",
+            is_downloaded=True,
+            target="https://www.youtube.com/watch?v=__NeP0RqACU",
+        )
+        Episode.objects.create(
+            name="Celebrating The Mario Community & 100 BILLION Views",
+            datasource=datasource,
+            episode_date=timezone.now(),
+            episode_id="thA_T13Wnqo",
+            target="https://www.youtube.com/watch?v=thA_T13Wnqo",
+        )
+        episode = Episode.objects.get(name="Introducing the shorter side of YouTube")
+        Playlist.objects.create(episode=episode, order_num=1)
+        user = get_user_model().objects.create_user("testuser")
+        user.set_password("1234")
+        user.save()
+
+    def test_actions(self):
+        client = APIClient()
+        client.login(username="testuser", password="1234", headers={"Content-Type": "application/json"})
+        response = client.put(reverse("api:api-task-sk-importepisodes"))
+        self.assertEqual(response.json(), {"success": True})

@@ -52,7 +52,7 @@ class Core_AddDataSourceView(View):
         return render(request, "core/add_datasource.html")
 
 
-@method_decorator([login_required, cache_page(settings.CACHE_DEFAULT_TTL)], name="dispatch")
+@method_decorator([login_required], name="dispatch")
 class Core_DeleteDataSourceView(View):
     def get(self, request):
         return render(request, "core/delete_datasource.html")
@@ -86,7 +86,7 @@ class Core_EpisodeView(View):
         return render(request, "core/episode.html", context={"episodes": episode_extended})
 
 
-@method_decorator([login_required, cache_page(settings.CACHE_SMART_TTL)], name="dispatch")
+@method_decorator([login_required], name="dispatch")
 class Core_PlaylistView(View):
     def get(self, request):
         playlist = Playlist.objects.all()

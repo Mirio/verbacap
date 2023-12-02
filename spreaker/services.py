@@ -49,7 +49,13 @@ def get_rss_data(input_url: str, limit: int = 10) -> CommonResponse:
 def get_audio(input_url: str, fname: str) -> CommonResponse:
     out = CommonResponse()
     inputurl_parsed = urlparse(input_url)
-    if inputurl_parsed.hostname != "api.spreaker.com" and inputurl_parsed.hostname != "dts.podtrac.com":
+    allowed_host = ["api.spreaker.com", "dts.podtrac.com", "pdst.fm"]
+    matched_host = False
+    for iter_host in allowed_host:
+        if inputurl_parsed.hostname == iter_host:
+            matched_host = True
+            break
+    if not matched_host:
         out.status = "error"
         out.message = "Not a spreaker url"
     else:

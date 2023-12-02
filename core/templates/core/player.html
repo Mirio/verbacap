@@ -23,14 +23,15 @@
     globalThis.viewed = [];
     globalThis.player = null;
     let endedHandler = function() {
-      let next_audio = get_next_audio();
+      let next_audio = get_Next_Audio();
       if (next_audio) {
-        episode_viewed(globalThis.currentplay.episode.datasource.provider.shortname, globalThis.currentplay.episode.episode_id);
-        update_player(next_audio);
+        episode_Viewed(globalThis.currentplay.episode.datasource.provider.shortname, globalThis.currentplay.episode.episode_id);
+        update_Player(next_audio);
+        clearInterval(timeoutID);
       }
     }
 
-    function remove_selectedaudioclass() {
+    function remove_SelectedAudioClass() {
       // Remove the css class ".selected-audio" from all elements
       let elements = document.querySelectorAll(".selected-audio");
       elements.forEach(function(value) {
@@ -38,7 +39,7 @@
       })
     }
 
-    function create_player() {
+    function create_Player() {
       // Initialize the player for the first time and define it in the global vars
       globalThis.player = videojs('podcast-player', {
         controlBar: {
@@ -57,19 +58,36 @@
       });
     }
 
-    function select_audio(provider_shorname, episode_id) {
+    function select_Audio(provider_shorname, episode_id) {
       // Event onclick from the playlist to listen a specific audio
       globalThis.player.off('ended', endedHandler);
       globalThis.playlists.forEach(function(value) {
         if (provider_shorname === value.episode.datasource.provider.shortname) {
           if (episode_id === value.episode.episode_id) {
-            update_player(value);
+            update_Player(value);
           }
         }
       })
     }
 
-    function update_player(data) {
+    function update_PlayerTime_OnBackend(provider_shortname, episode_id, current_time) {
+      let csrf_token = document.getElementById("csrfmiddlewaretoken");
+      let full_url = "/api/updateplayertime/edit/" + provider_shortname + "/" + episode_id + "/" + current_time + "/";
+      const reqopt = {
+        method: "PUT",
+        body: JSON.stringify({}),
+        credentials: "same-origin",
+        headers: {
+          "X-CSRFToken": csrf_token.value
+        }
+      }
+      fetch(full_url, reqopt)
+        .catch(error => {
+          console.log(error);
+        })
+    }
+
+    function update_Player(data) {
       // Change the player settings with the new audio provider in input
       globalThis.currentplay = data;
       globalThis.player.src({
@@ -78,18 +96,30 @@
       });
 
       globalThis.player.autoplay(true);
+      globalThis.player.on('loadedmetadata', function() {
+        globalThis.player.currentTime(globalThis.currentplay.episode.current_time);
+      })
+      globalThis.player.on('playing', function(event) {
+        timeoutID = window.setInterval(function() {
+          update_PlayerTime_OnBackend(globalThis.currentplay.episode.datasource.provider.shortname,
+            globalThis.currentplay.episode.episode_id, parseInt(globalThis.player.currentTime()))
+        }, 15000);
+      });
+      globalThis.player.on('pause', function(event) {
+        clearInterval(timeoutID);
+      });
       globalThis.player.on('ended', endedHandler);
-      remove_selectedaudioclass();
+      remove_SelectedAudioClass();
       let currentplayelem = document.getElementById(globalThis.currentplay.episode.datasource.provider.shortname + "_" + globalThis.currentplay.episode.episode_id);
       currentplayelem.classList.add("selected-audio");
     }
 
-    function change_playervolume(percentage) {
+    function change_PlayerVolume(percentage) {
       // Change the volume from onclick button
       globalThis.player.volume(percentage / 100);
     }
 
-    function episode_viewed(provider_shorname, episode_id) {
+    function episode_Viewed(provider_shorname, episode_id) {
       // Set episode to viewed after complited
       let current_player = videojs("podcast-player");
       let current_src = current_player.src().replace("/persist/", "");
@@ -111,23 +141,24 @@
       }
     }
 
-    function get_next_audio() {
+    function get_Next_Audio() {
       // Prepare the next audio objects from the playlist
       let matched = false;
       let out = null;
-      globalThis.playlists.forEach(function(value) {
+      globalThis.playlists.every(value => {
         if (matched) {
           out = value;
-          return
+          return false;
         }
         if (globalThis.currentplay === value) {
           matched = true;
         }
-      });
+        return true;
+      })
       return out;
     }
 
-    function popolate_html(data) {
+    function popolate_Html(data) {
       // Fetch the playlist objects from the API and popolate the HTML
       let counter = 0;
       let basehtml = document.getElementById("playlist");
@@ -137,16 +168,16 @@
         }
         globalThis.playlists.push(value);
         let content = '<li id="' + value.episode.datasource.provider.shortname + '_' + value.episode.episode_id + '" class="list-group-item bg-dark text-white fs-14px border-info">';
-        content += '<a class="text-white text-decoration-none" onclick=select_audio("' + value.episode.datasource.provider.shortname + '","' + value.episode.episode_id + '")>';
+        content += '<a class="text-white text-decoration-none" onclick=select_Audio("' + value.episode.datasource.provider.shortname + '","' + value.episode.episode_id + '")>';
         content += '<i class="' + value.episode.datasource.provider.icon + '" style="color: ' + value.episode.datasource.provider.color + '"></i>';
         content += '<span class="badge bg-success"> ' + value.episode.datasource.name + '</span> ' + value.episode.name;
         content += '</a></li>';
         basehtml.innerHTML += content;
         counter += 1;
       });
-      update_player(globalThis.currentplay);
+      update_Player(globalThis.currentplay);
     }
-    async function get_playlist() {
+    async function get_Playlist() {
       // Fetch the playlist from API
       const req = await fetch("/api/playlist/");
       const response = await req.json();
@@ -154,9 +185,9 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      get_playlist().then(data => {
-        create_player();
-        popolate_html(data);
+      get_Playlist().then(data => {
+        create_Player();
+        popolate_Html(data);
       });
     });
   </script>
@@ -173,39 +204,39 @@
         </div>
         <p>Volume Settings</p>
         <div class="btn-group">
-          <button onclick="change_playervolume(10);"
+          <button onclick="change_PlayerVolume(10);"
                   type="button"
                   class="btn btn-info btn-sm border border-secondary">10%</button>
-          <button onclick="change_playervolume(20);"
+          <button onclick="change_PlayerVolume(20);"
                   type="button"
                   class="btn btn-info btn-sm border border-secondary">20%</button>
-          <button onclick="change_playervolume(30);"
+          <button onclick="change_PlayerVolume(30);"
                   type="button"
                   class="btn btn-info btn-sm border border-secondary">30%</button>
         </div>
         <div class="btn-group">
-          <button onclick="change_playervolume(40);"
+          <button onclick="change_PlayerVolume(40);"
                   type="button"
                   class="btn btn-secondary btn-sm text-white border border-primary">40%</button>
-          <button onclick="change_playervolume(50);"
+          <button onclick="change_PlayerVolume(50);"
                   type="button"
                   class="btn btn-secondary btn-sm text-white border border-primary">50%</button>
-          <button onclick="change_playervolume(60);"
+          <button onclick="change_PlayerVolume(60);"
                   type="button"
                   class="btn btn-secondary btn-sm text-white border border-primary">60%</button>
         </div>
         <div class="btn-group">
-          <button onclick="change_playervolume(70);"
+          <button onclick="change_PlayerVolume(70);"
                   type="button"
                   class="btn btn-light btn-sm border border-secondary">70%</button>
-          <button onclick="change_playervolume(80);"
+          <button onclick="change_PlayerVolume(80);"
                   type="button"
                   class="btn btn-light btn-sm border border-secondary">80%</button>
-          <button onclick="change_playervolume(90);"
+          <button onclick="change_PlayerVolume(90);"
                   type="button"
                   class="btn btn-light btn-sm border border-secondary">90%</button>
         </div>
-        <button onclick="change_playervolume(100);"
+        <button onclick="change_PlayerVolume(100);"
                 type="button"
                 class="btn btn-success btn-sm">100%</button>
       </div>

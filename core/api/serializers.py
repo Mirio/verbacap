@@ -3,6 +3,16 @@ from rest_framework import serializers
 from core.models import DataSource, Episode, Playlist, Provider
 
 
+class CommonSuccessSerializer(serializers.Serializer):
+    success = serializers.BooleanField()
+
+
+class CommonSerializer(serializers.Serializer):
+    status = serializers.StringRelatedField
+    message = serializers.StringRelatedField
+    value = serializers.StringRelatedField
+
+
 class ProviderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Provider
