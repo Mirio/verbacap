@@ -35,6 +35,7 @@ class Episode(BaseModel):
     name = models.CharField(help_text="Episode Name")
     datasource = models.ForeignKey(DataSource, on_delete=models.CASCADE, help_text="Datasource to use")
     episode_date = models.DateField()
+    current_time = models.IntegerField(default=0, help_text="Current time (for resume function)")
     target = models.CharField(help_text="Episode target url/string based by Provider")
     is_viewed = models.BooleanField(default=False)
     is_downloaded = models.BooleanField(default=False)
@@ -52,7 +53,7 @@ class Playlist(BaseModel):
 
 
 class Settings(BaseModel):
-    name = models.CharField(help_text="Settings Name")
+    name = models.CharField(help_text="Settings Name", unique=True)
     value = models.CharField(help_text="Value of the setting")
 
     def __str__(self):

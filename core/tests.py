@@ -51,8 +51,20 @@ class ApiUrl_Test(TestCase):
         user.save()
 
     def test_urls(self):
-        self.assertEqual(reverse("api:playlist"), "/api/playlist/")
-        self.assertEqual(resolve("/api/playlist/").view_name, "api:playlist")
+        self.assertEqual(reverse("api:api-playlist"), "/api/playlist/")
+        self.assertEqual(resolve("/api/playlist/").view_name, "api:api-playlist")
+
+    def test_actions(self):
+        client = APIClient()
+        client.login(username="testuser", password="1234", headers={"Content-Type": "application/json"})
+        response = client.delete(reverse("api:api-action-appcachecleanup"))
+        self.assertEqual(response.json(), {"success": False})
+
+    def test_tasks(self):
+        client = APIClient()
+        client.login(username="testuser", password="1234", headers={"Content-Type": "application/json"})
+        response = client.put(reverse("api:api-task-corecalcolatepersistinfo"))
+        self.assertEqual(response.json(), {"success": True})
 
     def test_view(self):
         client = APIClient()
@@ -117,6 +129,7 @@ class Models_TestCase(TestCase):
         user = get_user_model().objects.create_user("testuser")
         user.set_password("1234")
         user.save()
+        Settings.objects.create(name="footest", value="aaa")
 
     def test_str(self):
         provider = Provider.objects.get(name="Youtube")
@@ -127,6 +140,8 @@ class Models_TestCase(TestCase):
         self.assertEqual(str(episode), "Youtube/Youtube Official Channel/Introducing the shorter side of YouTube")
         playlist = Playlist.objects.get(order_num=1)
         self.assertEqual(str(playlist), "Introducing the shorter side of YouTube")
+        settings = Settings.objects.get(name="footest")
+        self.assertEqual(str(settings), "footest")
 
     def test_homepage(self):
         client = Client()
@@ -219,6 +234,14 @@ class Views_TestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         client.login(username="testuser", password="1234")
         response_logged = client.get("/episode/")
+        self.assertEqual(response_logged.status_code, 200)
+
+    def test_playlistview(self):
+        client = Client()
+        response = client.get("/playlist/")
+        self.assertEqual(response.status_code, 302)
+        client.login(username="testuser", password="1234")
+        response_logged = client.get("/playlist/")
         self.assertEqual(response_logged.status_code, 200)
 
     def test_settingsview(self):

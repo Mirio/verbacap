@@ -11,7 +11,7 @@
 
 ![GitHub](https://img.shields.io/github/license/mirio/verbacap)
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
-[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/verbacap)](https://artifacthub.io/packages/search?repo=verbacap)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/verbacap)](https://artifacthub.io/packages/helm/verbacap/verbacap)
 
 
 

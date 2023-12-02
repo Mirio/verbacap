@@ -3,7 +3,9 @@ from os.path import exists
 
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils import timezone
+from rest_framework.test import APIClient
 
 from core.models import DataSource, Episode, Playlist, Provider
 from youtube.services import get_audio, get_channel_rssurl, get_playlist_rssurl, get_rss_data
@@ -11,6 +13,47 @@ from youtube.tasks import download_episode_yt, import_episodes_yt_channels, impo
 
 
 # Create your tests here.
+class ApiUrl_Test(TestCase):
+    def setUp(self):
+        Provider.objects.create(name="Youtube", icon="aaaa", color="#fff", shortname="yt")
+        provider = Provider.objects.get(name="Youtube")
+        Provider.objects.create(name="Youtube-Custom", icon="aaaa", color="#fff", shortname="ytc")
+        DataSource.objects.create(
+            name="Youtube Official Channel",
+            provider=provider,
+            target="https://www.youtube.com/feeds/videos.xml?channel_id=UCBR8-60-B28hp2BmDPdntcQ",
+        )
+        datasource = DataSource.objects.get(name="Youtube Official Channel")
+        Episode.objects.create(
+            name="Introducing the shorter side of YouTube",
+            datasource=datasource,
+            episode_date=timezone.now(),
+            episode_id="__NeP0RqACU",
+            is_downloaded=True,
+            target="https://www.youtube.com/watch?v=__NeP0RqACU",
+        )
+        Episode.objects.create(
+            name="Celebrating The Mario Community & 100 BILLION Views",
+            datasource=datasource,
+            episode_date=timezone.now(),
+            episode_id="thA_T13Wnqo",
+            target="https://www.youtube.com/watch?v=thA_T13Wnqo",
+        )
+        episode = Episode.objects.get(name="Introducing the shorter side of YouTube")
+        Playlist.objects.create(episode=episode, order_num=1)
+        user = get_user_model().objects.create_user("testuser")
+        user.set_password("1234")
+        user.save()
+
+    def test_actions(self):
+        client = APIClient()
+        client.login(username="testuser", password="1234", headers={"Content-Type": "application/json"})
+        response = client.put(reverse("api:api-task-yt-importepisodeschannel"))
+        self.assertEqual(response.json(), {"success": True})
+        response = client.put(reverse("api:api-task-yt-importepisodesplaylist"))
+        self.assertEqual(response.json(), {"success": True})
+
+
 class Services_TestCase(TestCase):
     def setUp(self):
         Provider.objects.create(name="Youtube", icon="aaaa", color="#fff", shortname="yt")

@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.db.models import Max
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.mixins import ListModelMixin
@@ -5,23 +6,62 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
-from core.api.serializers import EpisodeSerializer, PlaylistSerializer
+from core.api.serializers import CommonSuccessSerializer, EpisodeSerializer, PlaylistSerializer
 from core.models import DataSource, Episode, Playlist, Provider
 from core.services import download_episode
 from core.shared import CommonResponse
+from core.tasks import calcolate_persistinfo
+
+
+class Action_AppCacheCleanupView(APIView):
+    serializer_class = None
+
+    def delete(self, request, format=None):
+        serializer = CommonSuccessSerializer({"success": bool(cache.clear())})
+        return Response(serializer.data)
+
+
+class Task_CoreCalcolatePersistInfoView(APIView):
+    serializer_class = None
+
+    def put(self, request, format=None):
+        obj = calcolate_persistinfo.delay()
+        out = obj.id
+        serializer = CommonSuccessSerializer({"success": out})
+        return Response(serializer.data)
+
+
+class UpdatePlayerTimeView(APIView):
+    serializer_class = None
+
+    def put(self, request, provider_shortname, episode_id, current_time, format=None):
+        cache_key = f"UpdatePlayerTime_{provider_shortname}_{episode_id}"
+        cache.set(cache_key, current_time)
+        return Response()
 
 
 class PlaylistView(APIView):
+    serializer_class = PlaylistSerializer
+
     def get(self, request, format=None):
         playlist = []
         for iter in Playlist.objects.all().order_by("order_num"):
             if iter.episode.is_downloaded:
+                current_time = cache.get(
+                    "UpdatePlayerTime_{}_{}".format(
+                        iter.episode.datasource.provider.shortname, iter.episode.episode_id
+                    )
+                )
+                if current_time:
+                    iter.episode.current_time = current_time
                 playlist.append(iter)
         serializer = PlaylistSerializer(playlist, many=True)
         return Response(serializer.data)
 
 
 class PlaylistEditView(APIView):
+    serializer_class = None
+
     def delete(self, request, provider_shortname, episode_id, format=None):
         out = CommonResponse()
         try:
@@ -79,7 +119,9 @@ class PlaylistEditView(APIView):
         return Response(out.__dict__)
 
 
-class EpisodeViewedSerializer(APIView):
+class EpisodeViewedView(APIView):
+    serializer_class = None
+
     def put(self, request, provider_shortname, episode_id, format=None):
         out = CommonResponse()
         episode_exists = False
