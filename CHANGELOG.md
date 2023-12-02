@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2023-12-02
+
+### Bug Fixes
+
+- Force settings name to be unique
+- Fix mobile responsive design
+- _after_postgeneration warning (https://github.com/cookiecutter/cookiecutter-django/pull/4534)
+- Fix reference select_audio + Fix next audio break stop loop
+
+### Features
+
+- Adding Action/Task API
+- Adding Tasks/Action run on settings page (via API)
+- Adding resume function on player
+
+### Miscellaneous Tasks
+
+- Bump django-filter from 23.3 to 23.4
+- Bump celery from 5.3.5 to 5.3.6
+
+### Testing
+
+- Adding models check
+
+
+Docker package: [https://github.com/Mirio/verbacap/pkgs/container/verbacap](https://github.com/Mirio/verbacap/pkgs/container/verbacap)
+
 ## [1.3.0] - 2023-11-20
 
 ### Bug Fixes
