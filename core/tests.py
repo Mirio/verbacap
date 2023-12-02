@@ -129,6 +129,7 @@ class Models_TestCase(TestCase):
         user = get_user_model().objects.create_user("testuser")
         user.set_password("1234")
         user.save()
+        Settings.objects.create(name="footest", value="aaa")
 
     def test_str(self):
         provider = Provider.objects.get(name="Youtube")
@@ -139,6 +140,8 @@ class Models_TestCase(TestCase):
         self.assertEqual(str(episode), "Youtube/Youtube Official Channel/Introducing the shorter side of YouTube")
         playlist = Playlist.objects.get(order_num=1)
         self.assertEqual(str(playlist), "Introducing the shorter side of YouTube")
+        settings = Settings.objects.get(name="footest")
+        self.assertEqual(str(settings), "footest")
 
     def test_homepage(self):
         client = Client()

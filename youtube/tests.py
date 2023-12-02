@@ -49,9 +49,9 @@ class ApiUrl_Test(TestCase):
         client = APIClient()
         client.login(username="testuser", password="1234", headers={"Content-Type": "application/json"})
         response = client.put(reverse("api:api-task-yt-importepisodeschannel"))
-        self.assertEqual(response.json(), {"success": False})
+        self.assertEqual(response.json(), {"success": True})
         response = client.put(reverse("api:api-task-yt-importepisodesplaylist"))
-        self.assertEqual(response.json(), {"success": False})
+        self.assertEqual(response.json(), {"success": True})
 
 
 class Services_TestCase(TestCase):
