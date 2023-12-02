@@ -8,6 +8,7 @@ from core.api.views import (
     PlaylistEditView,
     PlaylistView,
     Task_CoreCalcolatePersistInfoView,
+    UpdatePlayerTimeView,
 )
 from spreaker.api.views import Task_SK_ImportEpisodeSK
 from verbacap.users.api.views import UserViewSet
@@ -36,6 +37,11 @@ urlpatterns = [
         "task/core-calcolatepersistinfo/",
         Task_CoreCalcolatePersistInfoView.as_view(),
         name="api-task-corecalcolatepersistinfo",
+    ),
+    path(
+        "updateplayertime/edit/<str:provider_shortname>/<str:episode_id>/<int:current_time>/",
+        UpdatePlayerTimeView.as_view(),
+        name="api-updateplayertime",
     ),
     path("playlist/", PlaylistView.as_view(), name="api-playlist"),
     path(

@@ -9,10 +9,8 @@ class Task_YT_ImportEpisodesYTChannel(APIView):
     serializer_class = None
 
     def put(self, request, format=None):
-        obj = import_episodes_yt_channels()
-        out = False
-        if obj["status"] == "success":
-            out = True
+        obj = import_episodes_yt_channels.delay()
+        out = obj.id
         serializer = CommonSuccessSerializer({"success": out})
         return Response(serializer.data)
 
@@ -21,9 +19,7 @@ class Task_YT_ImportEpisodesYTPlaylist(APIView):
     serializer_class = None
 
     def put(self, request, format=None):
-        obj = import_episodes_yt_playlist()
-        out = False
-        if obj["status"] == "success":
-            out = True
+        obj = import_episodes_yt_playlist.delay()
+        out = obj.id
         serializer = CommonSuccessSerializer({"success": out})
         return Response(serializer.data)

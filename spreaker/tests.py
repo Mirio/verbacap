@@ -168,4 +168,4 @@ class ApiUrl_Test(TestCase):
         client = APIClient()
         client.login(username="testuser", password="1234", headers={"Content-Type": "application/json"})
         response = client.put(reverse("api:api-task-sk-importepisodes"))
-        self.assertEqual(response.json(), {"success": False})
+        self.assertEqual(response.json(), {"success": True})

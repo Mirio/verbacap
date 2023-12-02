@@ -25,12 +25,19 @@ class Task_CoreCalcolatePersistInfoView(APIView):
     serializer_class = None
 
     def put(self, request, format=None):
-        obj = calcolate_persistinfo()
-        out = False
-        if obj["status"] == "success":
-            out = True
+        obj = calcolate_persistinfo.delay()
+        out = obj.id
         serializer = CommonSuccessSerializer({"success": out})
         return Response(serializer.data)
+
+
+class UpdatePlayerTimeView(APIView):
+    serializer_class = None
+
+    def put(self, request, provider_shortname, episode_id, current_time, format=None):
+        cache_key = f"UpdatePlayerTime_{provider_shortname}_{episode_id}"
+        cache.set(cache_key, current_time)
+        return Response()
 
 
 class PlaylistView(APIView):
@@ -40,6 +47,13 @@ class PlaylistView(APIView):
         playlist = []
         for iter in Playlist.objects.all().order_by("order_num"):
             if iter.episode.is_downloaded:
+                current_time = cache.get(
+                    "UpdatePlayerTime_{}_{}".format(
+                        iter.episode.datasource.provider.shortname, iter.episode.episode_id
+                    )
+                )
+                if current_time:
+                    iter.episode.current_time = current_time
                 playlist.append(iter)
         serializer = PlaylistSerializer(playlist, many=True)
         return Response(serializer.data)
