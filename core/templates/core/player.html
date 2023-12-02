@@ -27,6 +27,7 @@
       if (next_audio) {
         episode_Viewed(globalThis.currentplay.episode.datasource.provider.shortname, globalThis.currentplay.episode.episode_id);
         update_Player(next_audio);
+        clearInterval(timeoutID);
       }
     }
 
@@ -144,15 +145,16 @@
       // Prepare the next audio objects from the playlist
       let matched = false;
       let out = null;
-      globalThis.playlists.forEach(function(value) {
+      globalThis.playlists.every(value => {
         if (matched) {
           out = value;
-          return
+          return false;
         }
         if (globalThis.currentplay === value) {
           matched = true;
         }
-      });
+        return true;
+      })
       return out;
     }
 
@@ -166,7 +168,7 @@
         }
         globalThis.playlists.push(value);
         let content = '<li id="' + value.episode.datasource.provider.shortname + '_' + value.episode.episode_id + '" class="list-group-item bg-dark text-white fs-14px border-info">';
-        content += '<a class="text-white text-decoration-none" onclick=select_audio("' + value.episode.datasource.provider.shortname + '","' + value.episode.episode_id + '")>';
+        content += '<a class="text-white text-decoration-none" onclick=select_Audio("' + value.episode.datasource.provider.shortname + '","' + value.episode.episode_id + '")>';
         content += '<i class="' + value.episode.datasource.provider.icon + '" style="color: ' + value.episode.datasource.provider.color + '"></i>';
         content += '<span class="badge bg-success"> ' + value.episode.datasource.name + '</span> ' + value.episode.name;
         content += '</a></li>';
