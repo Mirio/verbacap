@@ -29,6 +29,41 @@ It uses [_Django_](https://www.djangoproject.com/) in order to create a new inte
 
 </div>
 
+## Features
+* Download from Youtube
+* Download from Youtube Playlists
+* Download from Spreaker.com
+* Pulls every day the list of episode from all datasources
+* Player with automatic resume
+* Auto-removal of listened episodes
+* No distraction Audio Player
+* Volume button for the quick adjust on the mobile devices
+* Fully Containerized
+* Lightweight
+
+## Screenshot
+
+<p align="center">
+    Homepage
+    <img src="https://raw.githubusercontent.com/Mirio/verbacap/main/docs/assets/dashboard_desktop.png"
+    alt="Dashboard Desktop"
+    width="1024">
+</p>
+
+<p align="center">
+    Episode Details
+    <img src="https://raw.githubusercontent.com/Mirio/verbacap/main/docs/assets/episodes_desktop.png"
+    alt="Episodes Desktop"
+    width="1024">
+</p>
+
+<p align="center">
+    Player
+    <img src="https://raw.githubusercontent.com/Mirio/verbacap/main/docs/assets/player_desktop.png"
+    alt="Player Desktop"
+    width="1024">
+</p>
+
 ## Quick Demo
 Below all the information to start a quick demo locally using Docker, for more stable solution please follow the [Installation](docs/install.md) guide.
 
@@ -66,3 +101,12 @@ Insert the user and password of the superadmin
 9. Go to "Episode" Page -> Click on "Add to Playlist"
 
 10. Go to Player and listen it
+
+## 🤝 Contributing
+Contributions, issues and feature requests are welcome.<br />
+Feel free to check [issues page](https://github.com/Mirio/verbacap/issues) if you want to contribute.<br />
+[Check the contributing guide](./CONTRIBUTING.md).<br />
+
+## 📝 License
+Copyright © [Mirio](https://github.com/Mirio).<br />
+This project is [MIT](https://github.com/Mirio/verbacap/blob/main/README.md) licensed.
