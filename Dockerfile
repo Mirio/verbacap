@@ -1,4 +1,4 @@
-FROM alpine:3.18
+FROM alpine:3.19
 
 ARG USERNAME="app"
 ARG GITCLIFF_VERSION="1.4.0"
