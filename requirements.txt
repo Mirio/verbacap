@@ -57,6 +57,6 @@ pytest-django==4.7.0  # https://github.com/pytest-dev/pytest-django
 # Additional
 # ------------------------------------------------------------------------------
 feedparser==6.0.11  # https://github.com/kurtmckee/feedparser
-beautifulsoup4==4.12.2
+beautifulsoup4==4.12.3
 yt-dlp==2023.12.30 # https://github.com/yt-dlp/yt-dlp
 django-filter==23.5 # https://github.com/carltongibson/django-filter
