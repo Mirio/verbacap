@@ -28,7 +28,7 @@ jobs:
           args: --verbose --latest
 
       - name: Push the changelog into release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body: ${{ steps.git-cliff.outputs.content }}
