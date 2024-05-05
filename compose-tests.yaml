@@ -1,0 +1,18 @@
+services:
+  redis:
+    image: docker.io/redis:7-alpine
+    restart: always
+    ports:
+      - 6379:6379
+    container_name: verbacap-redis
+
+  psql:
+    image: docker.io/postgres:15-alpine
+    restart: always
+    container_name: verbacap-psql
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - ./example/psql:/var/lib/postgresql/data

@@ -12,13 +12,13 @@ from core.shared import CommonResponse
 def get_rssurl(input_url: str) -> CommonResponse:
     out = CommonResponse()
     inputurl_parsed = urlparse(input_url)
-    if not inputurl_parsed.path.startswith("/show") or inputurl_parsed.hostname != "www.spreaker.com":
+    if not inputurl_parsed.path.startswith("/podcast") or inputurl_parsed.hostname != "www.spreaker.com":
         out.status = "error"
         out.message = "Not a spreaker url"
     else:
         req = requests.get(input_url)
         soup = BeautifulSoup(req.text, features="html.parser")
-        feedvalue = soup.find("a", {"id": "show_episodes_feed"})
+        feedvalue = soup.find("link", {"type": "application/rss+xml"})
         if feedvalue:
             out.value = feedvalue["href"]
             out.status = "success"

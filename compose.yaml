@@ -1,13 +1,18 @@
-version: "3.8"
-
 services:
   redis:
     image: docker.io/redis:7-alpine
     restart: always
     container_name: verbacap-redis
 
+  init-container:
+    image: alpine:3.19
+    command: chown -R 1000:1000 /persist /home/app/staticfiles
+    volumes:
+      - ./example/web:/persist
+      - ./example/web-static:/home/app/staticfiles
+
   web:
-    image: ghcr.io/mirio/verbacap:v1.0.0
+    image: ghcr.io/mirio/verbacap:v1.4.0
     restart: always
     container_name: verbacap-web
     command: "run"
@@ -15,6 +20,7 @@ services:
       - 8080:8080
     depends_on:
       - redis
+      - init-container
     environment:
       DATABASE_URL: "postgres://POSTGRES_USERNAME:POSTGRES_PASSWORD@POSTGRES_HOSTNAME:5432/postgres"
       DJANGO_SECRET_KEY: "CHANGEME_SECRET"
@@ -25,7 +31,7 @@ services:
       - CHANGEME_PERSIST_PATH:/persist
 
   celery:
-    image: ghcr.io/mirio/verbacap:v1.0.0
+    image: ghcr.io/mirio/verbacap:v1.4.0
     restart: always
     container_name: verbacap-celery
     command: "celery"

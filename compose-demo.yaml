@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   redis:
     image: docker.io/redis:7-alpine
@@ -15,8 +13,15 @@ services:
     volumes:
       - ./example/psql:/var/lib/postgresql/data
 
+  init-container:
+    image: alpine:3.19
+    command: chown -R 1000:1000 /persist /home/app/staticfiles
+    volumes:
+      - ./example/web:/persist
+      - ./example/web-static:/home/app/staticfiles
+
   web:
-    image: ghcr.io/mirio/verbacap:v1.0.0
+    image: ghcr.io/mirio/verbacap:v1.4.0
     restart: always
     container_name: verbacap-web
     command: "run"
@@ -25,6 +30,7 @@ services:
     depends_on:
       - redis
       - psql
+      - init-container
     environment:
       DATABASE_URL: "postgres://postgres:changeme@verbacap-psql:5432/postgres"
       DJANGO_SECRET_KEY: "Chang4M4"
@@ -33,9 +39,10 @@ services:
       PERSIST_AUDIO_ROOTDIR: "/persist"
     volumes:
       - ./example/web:/persist
+      - ./example/web-static:/home/app/staticfiles
 
   celery:
-    image: ghcr.io/mirio/verbacap:v1.0.0
+    image: ghcr.io/mirio/verbacap:v1.4.0
     restart: always
     container_name: verbacap-celery
     command: "celery"

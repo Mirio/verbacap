@@ -21,20 +21,20 @@ jobs:
           fetch-depth: 0
 
       - name: Generate a latest changelog
-        uses: orhun/git-cliff-action@v2
+        uses: orhun/git-cliff-action@v3
         id: git-cliff
         with:
           config: cliff.toml
           args: --verbose --latest
 
       - name: Push the changelog into release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body: ${{ steps.git-cliff.outputs.content }}
 
       - name: Generate a latest changelog
-        uses: orhun/git-cliff-action@v2
+        uses: orhun/git-cliff-action@v3
         id: git-cliff-full
         with:
           config: cliff.toml
