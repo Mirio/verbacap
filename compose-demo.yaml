@@ -21,7 +21,7 @@ services:
       - ./example/web-static:/home/app/staticfiles
 
   web:
-    image: ghcr.io/mirio/verbacap:v1.4.0
+    image: ghcr.io/mirio/verbacap:v1.5.0
     restart: always
     container_name: verbacap-web
     command: "run"
@@ -42,7 +42,7 @@ services:
       - ./example/web-static:/home/app/staticfiles
 
   celery:
-    image: ghcr.io/mirio/verbacap:v1.4.0
+    image: ghcr.io/mirio/verbacap:v1.5.0
     restart: always
     container_name: verbacap-celery
     command: "celery"
