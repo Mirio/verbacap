@@ -15,12 +15,12 @@ from spreaker.tasks import download_episode_sk, import_episodes_sk
 # Create your tests here.
 class Services_TestCase(TestCase):
     def test_get_rssurl(self):
-        valid = get_rssurl("https://www.spreaker.com/show/tracce-di-luca-mazzucchelli-psicologia")
+        valid = get_rssurl("https://www.spreaker.com/podcast/psicologia-con-luca-mazzucchelli--1238441")
         self.assertEqual(
             valid.__dict__,
             {"status": "success", "message": None, "value": "https://www.spreaker.com/show/1238441/episodes/feed"},
         )
-        invalidfullurl = get_rssurl("https://www.spreaker.com/show/nonexist")
+        invalidfullurl = get_rssurl("https://www.spreaker.com/podcast/nonexist")
         self.assertEqual(
             invalidfullurl.__dict__, {"status": "error", "message": "Error getting feed url", "value": None}
         )
@@ -63,7 +63,7 @@ class Views_TestCase(TestCase):
         DataSource.objects.create(
             name="Psicologia con Luca Mazzucchelli",
             provider=provider,
-            target="https://www.spreaker.com/show/tracce-di-luca-mazzucchelli-psicologia",
+            target="https://www.spreaker.com/podcast/psicologia-con-luca-mazzucchelli--1238441",
         )
         datasource = DataSource.objects.get(name="Psicologia con Luca Mazzucchelli")
         Episode.objects.create(
@@ -97,7 +97,10 @@ class Views_TestCase(TestCase):
         self.assertEqual(response_logged.status_code, 200)
         response_post = client.post(
             "/sk/add-podcast/",
-            {"name": "aaaa", "podcast_url": "https://www.spreaker.com/show/tracce-di-luca-mazzucchelli-psicologia"},
+            {
+                "name": "aaaa",
+                "podcast_url": "https://www.spreaker.com/podcast/psicologia-con-luca-mazzucchelli--1238441",
+            },
         )
         self.assertEqual(response_post.status_code, 422)
         response_post = client.post("/sk/add-podcast/", {"name": "aaaa", "podcast_url": "https://www.youtube.it"})

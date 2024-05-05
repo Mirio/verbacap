@@ -25,7 +25,7 @@ class Spreaker_AddPodcastView(View):
         if form.is_valid():
             target = form.cleaned_data["podcast_url"]
             name = form.cleaned_data["name"]
-            if target.startswith("https://www.spreaker.com/show"):
+            if target.startswith("https://www.spreaker.com/podcast"):
                 provider = Provider.objects.get(name="Spreaker")
                 match = DataSource.objects.filter(provider=provider, target=target.lower())
                 if not match:
