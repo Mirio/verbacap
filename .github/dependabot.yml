@@ -9,9 +9,8 @@ updates:
     commit-message:
       prefix: 'chore(dependabot): '
     target-branch: 'develop'
-    # Every weekday
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
 
   # Enable version updates for Python/Pip - Production
   - package-ecosystem: 'pip'
@@ -21,15 +20,13 @@ updates:
     commit-message:
       prefix: 'chore(dependabot): '
     target-branch: 'develop'
-    # Every weekday
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
 
   - package-ecosystem: 'docker'
     directory: '/'
     commit-message:
       prefix: 'chore(dependabot): '
     target-branch: 'develop'
-    # Every weekday
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
