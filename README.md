@@ -1,5 +1,11 @@
 <div align="center">
 
+---
+
+**PROJECT STATUS**: IT IS NOT LONGER SUPPORTED OR UPDATED.
+
+---
+
 # VerbaCap
 
 [![CodeQL](https://github.com/Mirio/verbacap/actions/workflows/codeql-action.yml/badge.svg)](https://github.com/Mirio/verbacap/actions/workflows/codeql-action.yml)
